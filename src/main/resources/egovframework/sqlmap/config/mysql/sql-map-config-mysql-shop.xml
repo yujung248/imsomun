@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+	<!-- <sqlMap resource="egovframework/sqlmap/let/shop/member/EgovMember_SQL_Mysql.xml"/>
+	<sqlMap resource="egovframework/sqlmap/let/shop/member/EgovS_Member_SQL_Mysql.xml"/> -->
+	<sqlMap resource="egovframework/sqlmap/let/shop/product/EgovProduct_SQL_Mysql.xml"/>
+	<sqlMap resource="egovframework/sqlmap/let/shop/snsuser/EgovPro_SQL_Mysql.xml"/>
+	<sqlMap resource="egovframework/sqlmap/let/shop/buyer/EgovBuyer_SQL_Mysql.xml"/>
+	<sqlMap resource="egovframework/sqlmap/let/shop/review/EgovReview_SQL_Mysql.xml"/>
+	<sqlMap resource="egovframework/sqlmap/let/shop/seller/EgovSeller_SQL_Mysql.xml"/>
+	<sqlMap resource="egovframework/sqlmap/let/shop/admin/EgovAdmin_SQL_Mysql.xml"/>
+	<sqlMap resource="egovframework/sqlmap/let/shop/basket/EgovBasket_SQL_Mysql.xml"/>
+	<sqlMap resource="egovframework/sqlmap/let/shop/deal/EgovDeal_SQL_Mysql.xml"/>
+	<sqlMap resource="egovframework/sqlmap/let/shop/like/EgovLike_SQL_Mysql.xml"/>
+	<sqlMap resource="egovframework/sqlmap/let/shop/log/EgovLog_SQL_Mysql.xml"/>
+	<sqlMap resource="egovframework/sqlmap/let/shop/notice/EgovNotice_SQL_Mysql.xml"/>
+	<sqlMap resource="egovframework/sqlmap/let/shop/main/EgovMain_SQL_Mysql.xml"/>
+	<sqlMap resource="egovframework/sqlmap/let/shop/test/EgovTest_SQL_Mysql.xml"/>
+	<sqlMap resource="egovframework/sqlmap/let/shop/scheduler/Scheduler_mySQL.xml"/>
+	<!-- <sqlMap resource="egovframework/sqlmap/let/shop/seller/EgovDeal_SQL_Mysql.xml"/> -->
+</sqlMapConfig>

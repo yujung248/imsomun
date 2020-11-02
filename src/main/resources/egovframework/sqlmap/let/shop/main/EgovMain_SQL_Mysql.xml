@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Main">
+
+	<typeAlias  alias="UserMainVO" type="egovframework.let.shop.user.main.service.impl.UserMainVO"/>
+	
+	
+	<select id="UserMainDAO.selectMainList" parameterClass="UserMainVO" resultClass="UserMainVO">
+		<![CDATA[  
+			SELECT
+				*
+			FROM
+				PRODUCT
+			WHERE 1=1
+			AND P_STATUS = 'Y'
+			order by rand() limit 8
+			
+		]]>
+	</select>
+	<!-- AND P_IDX=#count# -->
+	
+	<select id="UserMainDAO.selectCount" resultClass="int">
+		<![CDATA[  
+			SELECT
+				COUNT(*)
+			FROM
+				PRODUCT
+			WHERE 1=1
+		]]>
+	</select>
+	
+	<select id="UserMainDAO.selectMainList2" parameterClass="UserMainVO" resultClass="UserMainVO">
+		<![CDATA[  
+			SELECT
+				*
+			FROM
+				PRODUCT
+			WHERE 1=1
+			AND P_IDX=#count#
+			]]>
+	</select>
+
+	<select id="UserMainDAO.MainSearch" parameterClass="UserMainVO" resultClass="UserMainVO">
+		<![CDATA[  
+			SELECT * FROM 
+			PRODUCT 
+			WHERE p_name LIKE CONCAT('%',#keyword#,'%') OR s_id LIKE CONCAT('%',#keyword#,'%') OR P_CONTENT LIKE CONCAT('%',#keyword#,'%') OR P_TAGE LIKE CONCAT('%',#keyword#,'%')
+		]]>
+	</select>
+	
+</sqlMap>

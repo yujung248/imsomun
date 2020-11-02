@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="BasketVO">
+
+	<typeAlias alias="BasketVO"
+		type="egovframework.let.shop.mng.basket.service.impl.BasketMngVO" /> <!-- db에서 세터로 받아넣는 -->
+	<typeAlias alias="BasketBuyerVO"
+		type="egovframework.let.shop.mng.basket.service.impl.BasketBuyerMngVO" /> <!-- db에서 세터로 받아넣는 -->
+	<typeAlias alias="BasketUserVO"
+		type="egovframework.let.shop.user.basket.service.impl.BasketUserVO" /> <!-- db에서 세터로 받아넣는 -->
+	<typeAlias alias="BasketProductUserVO"
+		type="egovframework.let.shop.user.basket.service.impl.BasketProductUserVO" /> <!-- db에서 세터로 받아넣는 -->
+
+	<select id="BasketMngListCnt" parameterClass="BasketBuyerVO"
+		resultClass="int">
+		SELECT COUNT(*)
+		FROM BASKET ba, SNSPROFILE s
+		WHERE ba.sns_idx =
+		s.sns_idx
+		<isEqual prepend="AND" property="searchCnd" compareValue="0"> <!-- prepend로 and,or...쓰고 searchCnd값이 0이면 쿼리 문을 실행 시킨다. -->
+			<isNotEqual property="searchWrd" compareValue="">
+			<![CDATA[	
+				s.USERID = #searchWrd# 		
+			]]>
+			</isNotEqual>
+		</isEqual>
+	</select>
+	<select id="BasketMngList" resultClass="BasketBuyerVO">
+		SELECT *
+		FROM BASKET ba, SNSPROFILE s
+		WHERE ba.sns_idx = s.sns_idx
+		<isEqual prepend="AND" property="searchCnd" compareValue="0"> <!-- prepend로 and,or...쓰고 searchCnd값이 0이면 쿼리 문을 실행 시킨다. -->
+			<isNotEqual property="searchWrd" compareValue="">
+				<![CDATA[	
+					s.USERID = #searchWrd# 			
+				]]>
+			</isNotEqual>
+		</isEqual>
+		ORDER BY ba_reg_date DESC
+		LIMIT #recordCountPerPage# OFFSET
+		#firstIndex#
+	</select>
+	<select id="listCntBasketUser" parameterClass="BasketProductUserVO"
+		resultClass="int">
+		SELECT COUNT(*)
+		FROM BASKET
+		WHERE sns_idx = #sns_idx#
+
+	</select>
+	<select id="listBasketUser" resultClass="BasketProductUserVO">
+		SELECT *
+		FROM BASKET ba,
+		PRODUCT p
+		WHERE ba.p_idx = p.p_idx
+		AND sns_idx = #sns_idx#
+
+		ORDER BY ba.ba_reg_date
+		DESC
+
+		LIMIT #recordCountPerPage#
+		OFFSET #firstIndex#
+	</select>
+	<!-- <select id="BasketSelect" resultClass="BasketVO" parameterClass="BasketVO"> 
+		SELECT * FROM SNSPROFILE WHERE sns_idx = #sns_idx# </select> -->
+	<select id="selectBasketUser" parameterClass="BasketUserVO"
+		resultClass="BasketUserVO">
+		SELECT *
+		FROM BASKET
+		WHERE BA_IDX = #ba_idx#
+	</select>
+	<update id="updateMngBasket" parameterClass="BasketVO">
+		UPDATE BASKET
+		SET
+		sns_idx = #sns_idx#,
+		P_IDX = #p_idx#,
+		S_ID = #s_id#,
+		BA_Q = #ba_q#
+		WHERE BA_IDX = #ba_idx#
+	</update>
+
+	<update id="updateMngBasketQty" parameterClass="BasketVO">
+		UPDATE BASKET
+		SET
+				BA_Q = #ba_q#
+		WHERE 	BA_IDX = #ba_idx#
+	</update>
+
+	<update id="updateBasketUserQty" parameterClass="BasketUserVO">
+		UPDATE BASKET
+		SET
+				BA_Q = 		#ba_q#
+		WHERE 	BA_IDX = 	#ba_idx#
+
+	</update>
+
+	<delete id="deleteMngBasket" parameterClass="int">
+		delete from BASKET
+		where BA_IDX = #ba_idx#
+	</delete>
+	
+	<delete id="deleteBasketUser" parameterClass="BasketUserVO">
+		delete from BASKET
+		where BA_IDX = #ba_idx#
+	</delete>
+
+	<insert id="insertBasketUserPro" parameterClass="BasketUserVO">
+		INSERT INTO BASKET
+		VALUES (
+		(SELECT MAX(BA_IDX)+1
+		FROM BASKET b),
+		#sns_idx#,
+		#p_idx#,
+		#s_id#,
+		#ba_q#,
+		now()
+		)
+	</insert>
+	
+	<select id="selectByP_IdxBasketUser" parameterClass="BasketUserVO" resultClass="BasketUserVO">
+	SELECT *
+	FROM BASKET
+	WHERE 
+			P_IDX = #p_idx#
+	AND
+			SNS_IDX = #sns_idx#
+	</select>
+	
+	
+</sqlMap>

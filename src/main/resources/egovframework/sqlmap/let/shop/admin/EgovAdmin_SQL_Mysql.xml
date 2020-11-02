@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Admin">
+	<typeAlias  alias="AdminVO" type="egovframework.let.shop.mng.admin.service.impl.AdminVO"/>
+	
+	<select id="AdminDAO.selectLoginCheck" parameterClass="AdminVO" resultClass="java.lang.String">
+	<!-- 쿼리문 작성 -->
+		<![CDATA[  
+			SELECT A_ID
+			FROM ADMIN
+			WHERE 1=1
+			AND A_ID = #a_id#
+			AND A_PASS = #a_pass#
+		]]>
+	</select>
+	
+	<select id="AdminDAO.selectListLoginCheck" parameterClass="AdminVO" resultClass="AdminVO">
+	<!-- 쿼리문 작성 -->
+		<![CDATA[  
+			SELECT *
+			FROM ADMIN
+			WHERE 1=1
+			AND A_ID = #a_id#
+			AND A_PASS = #a_pass#
+		]]>
+	</select>
+    <select id="AdminDAO.adminListCnt" resultClass="int"> 
+       <![CDATA[
+         SELECT COUNT(*)
+         FROM ADMIN
+       ]]>
+    </select>
+    <select id="AdminDAO.adminList" resultClass="AdminVO">
+      <![CDATA[
+         SELECT 
+         A_ID,
+         A_EMAIL,
+         A_NAME,
+         A_MODDATE,
+         A_REGDATE
+         FROM ADMIN
+         WHERE 1=1
+         ORDER BY A_REGDATE DESC
+		 LIMIT #recordCountPerPage# OFFSET #firstIndex#
+      ]]>
+    </select>
+    <select id="AdminDAO.adminSelect" parameterClass="AdminVO" resultClass="AdminVO">
+       SELECT 
+       A_ID,
+       A_PASS,
+       A_EMAIL,
+       A_NAME
+       FROM ADMIN
+       WHERE A_ID=#a_id#
+    </select>
+    <update id="AdminDAO.adminUpdate"  parameterClass="AdminVO">
+       UPDATE ADMIN
+          SET
+            A_ID = #a_id#,
+            A_PASS = #a_pass#,
+            A_EMAIL = #a_email#,
+            A_NAME = #a_name#,
+            A_MODDATE = SYSDATE()
+       WHERE A_ID=#a_id#
+    </update>
+    
+   <insert id="AdminDAO.adminInsert" parameterClass="AdminVO">
+		<![CDATA[
+			INSERT INTO ADMIN
+			(A_ID, A_PASS, A_EMAIL, A_NAME, A_REGDATE)
+			VALUES
+			( #a_id#, #a_pass#, #a_email#, #a_name#, SYSDATE())			
+		]]>
+	</insert>
+	<delete id="AdminDAO.adminDelete" parameterClass="AdminVO">
+	   <![CDATA[
+	     DELETE  
+	     FROM ADMIN
+	     WHERE A_ID = #a_id#
+	   ]]>
+	</delete>
+</sqlMap>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Test">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="TestFileUploadVO" type="egovframework.let.shop.mng.testFileUpload.service.impl.TestFileUploadVO"/>
+	
+	<insert id="insertTestFileUpload" parameterClass="TestFileUploadVO">
+	INSERT INTO TFILE(ORIGINAL_FILE_NAME, STORED_FILE_NAME, FILE_SIZE)
+	VALUES(#original_file_name#, #stored_file_name#, #file_size#)
+	</insert>
+	
+	<select id="selectTestFileUploadCnt" parameterClass="TestFileUploadVO" resultClass="int">
+	SELECT
+		COUNT(TFILE_IDX)
+	FROM TFILE
+	WHERE 1=1
+	</select>
+	
+	<select id="listTestFileUpload" parameterClass="TestFileUploadVO" resultClass="TestFileUploadVO">
+	SELECT *
+	FROM TFILE
+	WHERE 1=1
+	</select>
+	
+	<delete id="deleteTestFileUpload" parameterClass="TestFileUploadVO">
+	DELETE
+	FROM TFILE
+	WHERE TFILE_IDX = #tfile_idx#
+	</delete>
+
+</sqlMap>

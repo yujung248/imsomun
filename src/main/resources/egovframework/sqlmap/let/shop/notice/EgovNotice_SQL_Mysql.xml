@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Notice">
+
+	<typeAlias alias="egovMap"
+		type="egovframework.rte.psl.dataaccess.util.EgovMap" />
+	<typeAlias alias="NoticeMngVO"
+		type="egovframework.let.shop.mng.notice.service.impl.NoticeMngVO" /> <!-- db에서 세터로 받아넣는 -->
+	<typeAlias alias="NoticeMng"
+		type="egovframework.let.shop.mng.notice.service.NoticeMng" />
+
+	<resultMap id="NoticeList"
+		class="egovframework.let.shop.mng.notice.service.impl.NoticeMngVO"> <!-- property는 vo값 -->
+		<result property="n_idx" column="N_IDX" columnIndex="1" />
+		<result property="n_div" column="N_DIV" columnIndex="2" />
+		<result property="n_sub" column="N_SUB" columnIndex="3" />
+		<result property="n_content" column="N_CONTENT" columnIndex="4" />
+		<result property="n_date" column="N_DATE" columnIndex="5" />
+		<result property="a_id" column="A_ID" columnIndex="6" />
+	</resultMap>
+
+	<select id="selectMngNoticeList" resultClass="NoticeMngVO" resultMap="NoticeList">
+	<![CDATA[
+		SELECT
+		 N_IDX
+		,N_DIV
+		,N_SUB
+		,N_CONTENT
+		,N_DATE
+		,A_ID
+		FROM
+			NOTICE
+		WHERE 1=1
+		]]>
+		<isEqual prepend="AND" property="searchCnd" compareValue="0">
+				<![CDATA[	N_IDX LIKE CONCAT ('%', #searchWrd#,'%') ]]>
+		</isEqual>
+		<isEqual prepend="AND" property="searchCnd" compareValue="1">
+				<![CDATA[	A_ID LIKE CONCAT ('%', #searchWrd#,'%') ]]>
+		</isEqual>
+		ORDER BY N_IDX DESC
+		LIMIT #recordCountPerPage# 
+		OFFSET #firstIndex#
+	</select>
+	
+	<select id="selectMngNoticeListCnt" parameterClass="NoticeMngVO"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(*)
+		FROM NOTICE
+		WHERE 1=1
+		<isEqual prepend="AND" property="searchCnd" compareValue="0">
+				<![CDATA[	N_IDX LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+		</isEqual>
+		<isEqual prepend="AND" property="searchCnd" compareValue="1">
+				<![CDATA[	A_ID LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+	</select>
+	
+	<select id="selectMngNoticeForm"  parameterClass="NoticeMngVO" resultClass="NoticeMngVO">
+	SELECT *
+	FROM NOTICE
+	WHERE N_IDX = #n_idx#
+	</select>
+
+	 <delete id="deleteMngNotice" parameterClass="int"> 
+		<![CDATA[
+	     DELETE  
+	     FROM NOTICE
+	     WHERE N_IDX = #n_idx#
+	   ]]>
+	</delete>
+	
+	<update id="updateMngNoticePro" parameterClass="NoticeMngVO">
+		UPDATE NOTICE
+		SET
+			N_DIV = #n_div#,
+			N_SUB = #n_sub#,
+			N_CONTENT = #n_content#,
+			N_DATE = SYSDATE(),
+			A_ID = #a_id#
+		WHERE N_IDX = #n_idx#
+	</update>
+	
+	<insert id="insertMngNoticePro" parameterClass="NoticeMngVO">
+	<![CDATA[
+ 			INSERT INTO NOTICE
+			(N_IDX,N_SUB, N_DIV, N_CONTENT, N_DATE, A_ID)
+			VALUES
+			((select max(N_IDX)+1		 
+			FROM NOTICE n), #n_sub#, #n_div#, #n_content#, SYSDATE(), #a_id#)				
+ 		]]>
+	</insert>
+
+</sqlMap>

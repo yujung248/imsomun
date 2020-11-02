@@ -1,0 +1,60 @@
+/* Member */
+CREATE TABLE MEMBER (
+	M_ID VARCHAR(200) , /* 관리자 아이디 */
+	M_NICKNAME VARCHAR(100) , /* 닉네임 */
+	PASSWORD VARCHAR(100) , /* 비밀번호 */
+	EMAIL VARCHAR(100) , /* 이메일 */
+	PHOTO VARCHAR(500) , /* 회원 사진 */
+	YOU_OUT VARCHAR(100) , /* 회원 탈퇴 */
+	YOU_STOP VARCHAR(50) , /* 회원 정지 */
+	PHONE VARCHAR(100) , /* 핸드폰번호 */
+	ADDR VARCHAR(100) , /* 주소 */
+	DEL_YN VARCHAR(100) , /* 삭제 여부 */
+	M_IDX INT /* 순번 */
+);
+
+/* Product */
+CREATE TABLE PRODUCT (
+	M_ID VARCHAR(200) , /* 관리자 아이디 */
+	B_IDX INT , /* 게시판 순번 */
+	P_IDX INT , /* 제품 번호 */
+	PRODUCT_NAME VARCHAR(200) , /* 제품명 */
+	PRICE VARCHAR(200) , /* 가격 */
+	REG_DATE DATE , /* 등록 날짜 */
+	UPDATE_DATE DATE , /* 업데이트된 날짜 */
+	MAIN_IMG VARCHAR(300) , /* 메인 제품 사진 */
+	MAIN_PATH VARCHAR(300) , /* 메인 제품 경로 */
+	SUB_IMG VARCHAR(300) , /* 서브 제품 사진 */
+	D_LOC VARCHAR(300) , /* 배송 지역 */
+	D_HOW VARCHAR(300) , /* 배송 방법 */
+	D_WHEN VARCHAR(300) , /* 배송 기간 */
+	D_COST VARCHAR(300) , /* 배송 비용 */
+	PRODUCT_METHOD VARCHAR(300) , /* 보관 방법 */
+	P_SDATE DATE, /* 판매시작일 */
+	P_EDATE DATE /* 판매종료일 */
+);
+
+
+
+/* sns계정 */
+CREATE TABLE S_MEMBER (
+	S_EMAIL VARCHAR(500) , /* 이메일 */
+	S_ID VARCHAR(200) , /* 아이디 */
+	S_IDX INT , /* 순번 */
+	S_BIRTHDAY VARCHAR(100), /* 생년월일 */
+	S_SEX CHAR(2) /* 성별 */
+);
+
+
+
+/* 장바구니 */
+CREATE TABLE PRO (
+	M_ID2 VARCHAR(200) , /* 관리자 아이디 */
+	S_EMAIL VARCHAR(500) , /* 이메일 */
+	P_IDX2 INT , /* 제품 번호 */
+	S_ID VARCHAR(200) , /* 아이디 */
+	J_IDX INT , /* 순번 */
+	M_PHONE VARCHAR(100), /* 핸드폰번호 */
+	M_ADDR VARCHAR(100), /* 주소 */
+	J_PRO CHAR(2) /* 거래진행여부 */
+);

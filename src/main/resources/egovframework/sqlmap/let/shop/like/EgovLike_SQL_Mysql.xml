@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Like">
+	<typeAlias alias="LikeUserVO"
+		type="egovframework.let.shop.user.like.service.impl.LikeUserVO" /> <!-- db에서 세터로 받아넣는 -->
+
+	<resultMap id="LikeUserList"
+		class="egovframework.let.shop.user.like.service.impl.LikeUserVO"> <!-- property는 vo값 -->
+		<result property="p_idx" column="P_IDX" columnIndex="1" />
+		<result property="s_id" column="S_ID" columnIndex="2" />
+		<result property="p_name" column="P_NAME" columnIndex="3" />
+		<result property="p_image" column="P_IMAGE" columnIndex="4" />
+		<result property="sns_idx" column="SNS_IDX" columnIndex="5" />
+		<result property="l_regdate" column="L_REGDATE" columnIndex="6" />
+		<result property="l_idx" column="L_IDX" columnIndex="7" />
+	</resultMap>
+
+
+	<select id="LikeUserDAO.selectLikeUserList" resultMap="LikeUserList"
+		parameterClass="LikeUserVO">
+		SELECT
+		l.P_IDX,
+		l.S_ID,
+		p.P_NAME,
+		p.P_IMAGE,
+		l.SNS_IDX,
+		l.L_REGDATE,
+		l.L_IDX
+		FROM PLIKE l, PRODUCT p
+		WHERE 1=1
+		AND p.P_IDX = l.P_IDX
+		AND l.SNS_IDX = #sns_idx#
+	</select>
+	<select id="LikeUserDAO.selectLikeUserListCnt" resultClass="java.lang.Integer"
+		parameterClass="LikeUserVO">
+		SELECT COUNT(*)
+		FROM PLIKE
+		WHERE SNS_IDX = #sns_idx#
+	</select>
+	
+	<insert id="insertUserLike" parameterClass="LikeUserVO">
+		INSERT INTO PLIKE
+		(P_IDX, sns_idx, S_ID, L_REGDATE,L_IDX)
+		VALUES
+		( #p_idx#, #sns_idx#, #s_id#, SYSDATE(), #l_idx#)
+	</insert>
+
+	<select id="insertUserLikeSelect" parameterClass="LikeUserVO"
+		resultClass="int">
+		SELECT count(L_IDX)
+		FROM PLIKE
+		WHERE P_IDX = #p_idx#
+		AND SNS_IDX = #sns_idx#
+	</select>
+	<delete id="deleteUserLike" parameterClass="LikeUserVO">
+	  DELETE FROM PLIKE
+	  WHERE P_IDX = #p_idx#
+	</delete>
+</sqlMap>

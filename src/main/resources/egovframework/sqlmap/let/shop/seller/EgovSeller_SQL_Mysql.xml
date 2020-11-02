@@ -1,0 +1,589 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Seller">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="SellerVO" type="egovframework.let.shop.user.seller.service.impl.SellerUserVO"/> <!-- db에서 세터로 받아넣는 -->
+	<!-- <typeAlias  alias="MemberVO" type="egovframework.let.shop.service.MemberVO"/>
+	<typeAlias  alias="S_MemberVO" type="egovframework.let.shop.service.S_MemberVO"/>
+	<typeAlias  alias="ProVO" type="egovframework.let.shop.service.ProVO"/> -->
+	<typeAlias  alias="Seller" type="egovframework.let.shop.user.seller.service.SellerUser"/>
+	<typeAlias alias="SellerMngVO" type="egovframework.let.shop.mng.seller.service.impl.SellerMngVO" /> <!-- db에서 세터로 받아넣는 -->
+	<typeAlias alias="SellerUserVO" type="egovframework.let.shop.user.seller.service.impl.SellerUserVO" /> <!-- db에서 세터로 받아넣는 -->
+	<typeAlias alias="SellerMng" type="egovframework.let.shop.mng.seller.service.SellerMng" />
+	<typeAlias alias="ProductUserVO" type="egovframework.let.shop.user.product.service.impl.ProductUserVO"/>
+	<typeAlias alias="DealUserVO" type="egovframework.let.shop.user.deal.service.impl.DealUserVO" /> <!-- db에서 세터로 받아넣는 -->
+	<typeAlias  alias="ReviewVO" type="egovframework.let.shop.user.review.service.ReviewUserVO"/>
+	
+	
+	
+	
+	<resultMap id="sellerList" class="egovframework.let.shop.user.seller.service.impl.SellerUserVO"> <!-- property는 vo값 -->
+		<result property="s_id" column="S_ID" columnIndex="1"/>
+		<result property="s_nickname" column="S_NICKNAME" columnIndex="2"/>
+		<result property="s_pass" column="S_PASS" columnIndex="3"/>
+		<result property="s_email" column="S_EMAIL" columnIndex="4"/>
+		<result property="s_photo" column="S_PHOTO" columnIndex="5"/>
+		<result property="s_status" column="S_STATUS" columnIndex="6"/>
+		<result property="s_phone" column="S_PHONE" columnIndex="7"/>
+		<result property="s_addr" column="S_ADDR" columnIndex="8"/>
+		<result property="s_gender" column="S_GENDER" columnIndex="9"/>
+		<result property="s_moddate" column="S_MODDATE" columnIndex="10"/>
+		<result property="s_regdate" column="S_REGDATE" columnIndex="11"/>
+		<result property="s_birth" column="S_BIRTH" columnIndex="12"/>
+	</resultMap>
+	<resultMap id="sellerList2" class="egovframework.let.shop.user.seller.service.impl.SellerUserVO"> <!-- property는 vo값 -->
+		<result property="s_id" column="S_ID" columnIndex="1"/>
+	</resultMap>
+	
+	<resultMap id="ReviewList1" class="egovframework.let.shop.user.review.service.ReviewUserVO"> <!-- property는 vo값 -->
+		<result property="s_id" column="S_ID" columnIndex="1"/>
+		<result property="sns_idx" column="SNS_IDX" columnIndex="2"/>							<!-- collum 은 db의 컬럼값 -->
+		<result property="r_idx" column="R_IDX" columnIndex="3"/>			  					<!-- db의 컬럼 순서 -->
+		<result property="p_idx" column="P_IDX" columnIndex="4"/>
+		<result property="r_content" column="R_CONTENT" columnIndex="5"/>
+		<result property="r_regdate" column="R_REGDATE" columnIndex="6"/>
+		<result property="r_delyn" column="R_DELYN" columnIndex="7"/>
+		<result property="r_div" column="R_DIV" columnIndex="8"/>
+		<result property="sns_score" column="SNS_SCORE" columnIndex="9"/>
+		<result property="seller_score" column="SELLER_SCORE" columnIndex="10"/>
+		<result property="nickname" column="NICKNAME" columnIndex="11"/>
+		<result property="s_nickname" column="S_NICKNAME" columnIndex="12"/>
+		<result property="p_name" column="P_NAME" columnIndex="13"/>
+	</resultMap>
+	
+	<!-- <select id="EgovSellerDAO.selectSellerList1" parameterClass="SellerVO" resultMap="selleroList2" >
+	쿼리문 작성
+		<![CDATA[  
+			SELECT 
+				 S_ID
+			FROM
+				SELLER
+			WHERE 1=1
+		]]>
+	</select> -->
+	<select id="EgovSellerDAO.selectLoginCheck1" parameterClass="SellerVO" resultClass="java.lang.String">
+	<!-- 쿼리문 작성 -->
+		<![CDATA[  
+			SELECT S_ID
+			FROM SELLER
+			WHERE 1=1
+			AND S_STATUS = 'Y'
+			AND S_ID = #s_id#
+			AND S_PASS = #s_pass#
+			
+		]]>
+	</select>
+	<select id="EgovSellerDAO.selectLoginListCheck" parameterClass="SellerVO" resultClass="SellerVO">
+	<!-- 쿼리문 작성 -->
+		<![CDATA[  
+			SELECT *
+			FROM SELLER
+			WHERE 1=1
+			AND S_STATUS = 'Y'
+			AND S_ID = #s_id#
+			AND S_PASS = #s_pass#
+			
+		]]>
+	</select>
+	<insert id="EgovSellerDAO.sellerinsertPro" parameterClass="SellerVO">
+	<selectKey resultClass="java.lang.String" keyProperty="s_idx">
+		SELECT 
+			CASE 
+				WHEN 
+					MAX(S_IDX) IS NULL 
+				THEN 
+					1 
+				ELSE
+					MAX(S_IDX)+1 
+				END
+		FROM
+			SELLER
+	</selectKey>
+		<![CDATA[  
+			INSERT INTO SELLER(S_ID,S_IDX, S_NICKNAME,S_PASS,S_EMAIL,S_PHOTO,S_STATUS,S_PHONE,S_ADDR,S_GENDER,S_REGDATE,S_BIRTH,S_ACCOUNT,S_ACCOUNT_N)
+			value(#s_id#,#s_idx#,#s_nickname#,#s_pass#,#s_email#,#s_photo#,'Y',#s_phone#,#s_addr#,#s_gender#,now(),#s_birth#,#s_account#,'NULL')
+		]]>
+	</insert>
+	<select id="EgovSellerDAO.sellerSearchIdPro"  parameterClass="SellerVO" resultClass="SellerVO">
+		<![CDATA[  
+			SELECT S_ID
+			FROM SELLER
+			WHERE 1=1
+			AND S_ID = #s_id#
+		]]>
+	</select>
+	<select id="EgovSellerDAO.sellerIdChk"  parameterClass="SellerVO" resultClass="int">
+		<![CDATA[  
+			SELECT
+				COUNT(*)
+			FROM
+				SELLER
+			WHERE 1=1
+			AND S_ID = #s_id#
+		]]>
+	</select>
+	<select id="EgovSellerDAO.sellerNicknameChk"  parameterClass="SellerVO" resultClass="int">
+		<![CDATA[  
+			SELECT
+				COUNT(*)
+			FROM
+				SELLER
+			WHERE 1=1
+			AND S_NICKNAME = #s_nickname#
+		]]>
+	</select>
+	<select id="EgovSellerDAO.sellerEmailChk"  parameterClass="SellerVO" resultClass="int">
+		<![CDATA[  
+			SELECT
+				COUNT(*)
+			FROM
+				SELLER
+			WHERE 1=1
+			AND S_EMAIL = #s_email#
+		]]>
+	</select>
+	
+	<select id="EgovSellerDAO.sellerNameEmailChk"  parameterClass="SellerVO" resultClass="int">
+		<![CDATA[  
+			SELECT
+				COUNT(*)
+			FROM
+				SELLER
+			WHERE 1=1
+			AND S_NAME = #s_name#
+			AND S_EMAIL = #s_email#
+		]]>
+	</select>
+		
+	<update id="EgovSellerDAO.sellerAgreeNum" parameterClass="SellerVO">
+ 		<![CDATA[
+			UPDATE SELLER SET 
+				S_AGREENUM = #s_agreenum#
+			WHERE 1=1
+			AND S_NAME = #s_name#
+			AND S_EMAIL = #s_email#
+ 		]]>
+ 	</update>
+ 	<update id="EgovSellerDAO.updateAgreenum" parameterClass="SellerVO">
+ 		<![CDATA[
+			UPDATE SELLER SET 
+				S_AGREENUM = 0
+			WHERE 1=1
+			AND S_NAME = #s_name#
+			AND S_EMAIL = #s_email#
+ 		]]>
+ 	</update>
+ 	
+	<select id="EgovSellerDAO.sellerCertificationNumberchk"  parameterClass="SellerVO" resultClass="int">
+		<![CDATA[  
+			SELECT
+				COUNT(*)
+			FROM
+				SELLER
+			WHERE 1=1
+			AND S_NAME = #s_name#
+			AND S_EMAIL = #s_email#
+			AND S_AGREENUM = #s_agreenum#
+		]]>
+	</select>
+
+	<select id="EgovSellerDAO.sellerFindId"  parameterClass="SellerVO" resultClass="java.lang.String">
+		<![CDATA[  
+			SELECT
+				S_ID
+			FROM
+				SELLER
+			WHERE 1=1
+			AND S_NAME = #s_name#
+			AND S_EMAIL = #s_email#
+			AND S_AGREENUM = #s_agreenum#
+		]]>
+	</select>
+
+	<update id="EgovSellerDAO.sellerRePass" parameterClass="SellerVO">
+ 		<![CDATA[
+			UPDATE SELLER SET 
+				S_PASS = #s_pass#
+			WHERE 1=1
+			AND S_ID = #s_id#
+ 		]]>
+ 	</update>
+	<!-- <resultMap id="mngMemberList" class="egovframework.let.shop.member.service.MemberVO"> property는 vo값
+		<result property="m_id" column="M_ID" columnIndex="1"/>						 collum 은 db의 컬럼값
+		<result property="m_nickname" column="M_NICKNAME" columnIndex="2"/>			  db의 컬럼 순서
+		<result property="password" column="PASSWORD" columnIndex="3"/>
+		<result property="email" column="EMAIL" columnIndex="4"/>
+		<result property="photo" column="PHOTO" columnIndex="5"/>
+		<result property="you_out" column="YOU_OUT" columnIndex="6"/>
+		<result property="you_stop" column="YOU_STOP" columnIndex="7"/>
+		<result property="phone" column="PHONE" columnIndex="8"/>
+		<result property="addr" column="ADDR" columnIndex="9"/>
+		<result property="del_yn" column="DEL_YN" columnIndex="10"/>
+		<result property="m_idx" column="M_IDX" columnIndex="11"/>
+	</resultMap>
+	
+	<select id="EgovMngMemberDAO.selectMngMemberList" parameterClass="MemberVO" resultMap="mngMemberList" >
+		<![CDATA[
+			SELECT 
+				   M_ID
+				  ,M_NICKNAME
+				  ,PASSWORD
+				  ,EMAIL
+				  ,PHOTO
+				  ,YOU_OUT
+				  ,YOU_STOP
+				  ,PHONE
+				  ,ADDR
+				  ,DEL_YN
+				  ,M_IDX
+			FROM
+				MEMBER
+			WHERE 1=1
+			AND DEL_YN = 'N'
+		]]>		
+	</select>
+	
+	<resultMap id="mngS_MemberList" class="egovframework.let.shop.snsuser.service.S_MemberVO"> property는 vo값
+		<result property="s_email" column="S_EMAIL" columnIndex="1"/>						 collum 은 db의 컬럼값
+		<result property="s_id" column="S_ID" columnIndex="2"/>			  db의 컬럼 순서
+		<result property="s_idx" column="S_IDX" columnIndex="3"/>
+		<result property="s_bitrhday" column="S_BIRTHDAY" columnIndex="4"/>
+		<result property="s_sex" column="S_SEX" columnIndex="5"/>
+	</resultMap>
+	
+	<select id="EgovMngS_MemberDAO.selectMngS_MemberList" parameterClass="S_MemberVO" resultMap="mngS_MemberList" >
+		<![CDATA[
+			SELECT 
+				   S_EMAIL
+				  ,S_ID
+				  ,S_IDX
+				  ,S_BIRTHDAY
+				  ,S_SEX
+			FROM
+				S_MEMBER
+			WHERE 1=1
+			AND DEL_YN = 'N'
+		]]>
+	</select>	
+				
+	<resultMap id="mngProList" class="egovframework.let.shop.service.ProVO"> property는 vo값
+		<result property="m_id2" column="M_ID2" columnIndex="1"/>						 collum 은 db의 컬럼값
+		<result property="s_email" column="S_EMAIL" columnIndex="2"/>			  db의 컬럼 순서
+		<result property="p_idx2" column="P_IDX2" columnIndex="3"/>
+		<result property="s_id" column="S_ID" columnIndex="4"/>
+		<result property="j_idx" column="J_IDX" columnIndex="5"/>
+		<result property="m_phone" column="M_PHONE" columnIndex="6"/>
+		<result property="m_addr" column="M_ADDR" columnIndex="7"/>
+		<result property="j_pro" column="J_PRO" columnIndex="8"/>
+	</resultMap>
+	
+	<select id="EgovMngProDAO.selectMngProList" parameterClass="ProVO" resultMap="mngProList" >
+		<![CDATA[
+			SELECT 
+				   M_ID2
+				  ,S_EMAIL
+				  ,P_IDX2
+				  ,S_ID
+				  ,J_IDX
+				  ,M_PHONE
+				  ,M_ADDR
+				  ,J_PRO
+			FROM
+				PRO
+			WHERE 1=1
+			AND DEL_YN = 'N'
+		]]>				
+			<isEqual prepend="AND" property="searchCnd" compareValue="0"> prepend로 and,or...쓰고 searchCnd값이 0이면 쿼리 문을 실행 시킨다.
+				<![CDATA[	COMPANY_NM LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCnd" compareValue="1">
+				<![CDATA[	PRODUCT_NM LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>	
+		<![CDATA[			
+			ORDER BY IDX DESC
+			LIMIT #recordCountPerPage# OFFSET #firstIndex#
+		]]>					
+	</select> -->
+	
+	<!-- <select id="EgovSellerDAO.selectSellerListCnt1" parameterClass="SellerVO" resultClass="java.lang.Integer" >
+		<![CDATA[
+			SELECT
+				COUNT(P_IDX)
+			FROM
+				SELLER
+			WHERE 1=1
+		]]>
+			<isEqual prepend="AND" property="searchCnd" compareValue="0">
+				<![CDATA[	COMPANY_NM LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCnd" compareValue="1">
+				<![CDATA[	PRODUCT_NM LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>	
+	</select> -->
+	
+	<!-- <insert id="EgovMngProductDAO.insertMngProduct" parameterClass="Product">
+		<![CDATA[
+			INSERT INTO 테이블명
+			(컬럼명, 날짜)
+			VALUES
+			( #변수명#, SYSDATE()  
+			 )			
+		]]>
+	</insert>
+	
+	<update id="EgovMngProductDAO.updateMngProduct" parameterClass="Product">
+ 		<![CDATA[
+			UPDATE 테이블명 SET 
+				컬럼명 = #변수명#,
+				LAST_UPDT_PNTTM = SYSDATE()
+			WHERE 컬럼명 = #변수명#
+ 		]]>
+ 	</update> -->
+ 	
+ 	<select id="selectSellerMngListCnt" parameterClass="SellerMngVO" resultClass="int">
+		SELECT COUNT(*)
+		FROM SELLER
+		WHERE 1=1
+		<isEqual prepend="AND" property="searchCnd" compareValue="0"> <!-- prepend로 and,or...쓰고 searchCnd값이 0이면 쿼리 문을 실행 시킨다. -->
+				<![CDATA[	S_ID LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+		</isEqual>
+	</select>
+ 	
+ 	<select id="selectSellerMngList" resultClass="SellerMngVO">
+		SELECT *
+		FROM SELLER
+		WHERE 1=1
+		<isEqual prepend="AND" property="searchCnd" compareValue="0"> <!-- prepend로 and,or...쓰고 searchCnd값이 0이면 쿼리 문을 실행 시킨다. -->
+				<![CDATA[	S_ID LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+		</isEqual>
+		<isEqual prepend="AND" property="searchCnd" compareValue="1">
+				<![CDATA[	SNSCODE LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+		</isEqual>
+		ORDER BY S_IDX DESC
+		LIMIT #recordCountPerPage# OFFSET #firstIndex#
+	</select>
+	
+	<select id="sellerSelect" resultClass="SellerMngVO" parameterClass="SellerMngVO">
+		SELECT *
+		FROM SELLER
+		WHERE s_id = #s_id#
+	</select>
+	
+	<update id="sellerUpdate" parameterClass="SellerMngVO">
+		UPDATE SELLER
+		SET
+			s_nickname = #s_nickname#,
+			s_pass = #s_pass#,
+			s_email = #s_email#,
+			s_photo = #s_photo#,
+			s_status = #s_status#,
+			s_phone = #s_phone#,
+			s_birth = #s_birth#,
+			s_account_n = #s_account_n#,
+			s_account = #s_account#,
+			s_addr = #s_addr#
+		WHERE s_id = #s_id#	
+	</update>
+	
+	<select id="selectSellerUserListCnt" parameterClass="SellerMngVO" resultClass="int">
+		SELECT COUNT(*)
+		FROM SELLER
+		WHERE 1=1
+		<isEqual prepend="AND" property="searchCnd" compareValue="0"> <!-- prepend로 and,or...쓰고 searchCnd값이 0이면 쿼리 문을 실행 시킨다. -->
+				<![CDATA[	S_ID LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+		</isEqual>
+
+	</select>
+	
+	<update id="updateMngSellerStateChange" parameterClass="java.lang.String">
+		UPDATE SELLER
+		SET s_status = 
+						CASE
+						WHEN s_status = 'Y'
+							THEN 'N'
+							ELSE 'Y'
+						END
+		WHERE s_id = #s_id#
+	</update>
+	
+	<insert id="InsertMngSellerPro" parameterClass="SellerMngVO">
+	<selectKey resultClass="java.lang.String" keyProperty="s_idx">
+		SELECT 
+			CASE 
+				WHEN 
+					MAX(S_IDX) IS NULL 
+				THEN 
+					1 
+				ELSE
+					MAX(S_IDX)+1 
+				END
+		FROM
+			SELLER
+	</selectKey>
+		<![CDATA[  
+			INSERT INTO SELLER(S_ID,S_IDX, S_NICKNAME,S_PASS,S_EMAIL,S_PHOTO,S_STATUS,S_PHONE,S_ADDR,S_GENDER,S_REGDATE,S_BIRTH,S_ACCOUNT,S_ACCOUNT_N)
+			value(#s_id#,#s_idx#,#s_nickname#,#s_pass#,#s_email#,#s_photo#,'Y',#s_phone#,#s_addr#,#s_gender#,now(),#s_birth#,#s_account#,#s_account_n#)
+		]]>
+	</insert>
+	
+   	<update id="ck.ckupdateMngSellerStateChange" parameterClass="SellerMngVO">
+	 		UPDATE SELLER
+		SET 
+			S_STATUS = 
+				CASE 
+					WHEN S_STATUS = 'Y'
+						THEN 'N'
+						ELSE 'Y'
+					END
+		WHERE S_IDX = #s_idx#
+	</update>  
+
+	<select id="sellerUserSelect" resultClass="SellerUserVO" parameterClass="SellerUserVO">
+		SELECT *
+		FROM SELLER
+		WHERE s_id = #s_id#
+	</select>
+	
+	<update id="sellerUserUpdate" parameterClass="SellerUserVO">
+		UPDATE SELLER
+		SET
+			s_nickname = #s_nickname#,
+			s_pass = #s_pass#,
+			s_email = #s_email#,
+			s_photo = #s_photo#,
+			s_phone = #s_phone#,
+			s_birth = #s_birth#,
+			s_account_n = #s_account_n#,
+			s_account = #s_account#,
+			s_addr = #s_addr#
+		WHERE s_id = #s_id#	
+	</update>
+	
+	<select id="selectUserSeller" resultClass="SellerUserVO" parameterClass="SellerUserVO">
+		SELECT *
+		FROM SELLER
+		WHERE s_id = #s_id#
+	</select>
+	
+	<select id="sellerSelectProductList" resultClass="ProductUserVO" parameterClass="ProductUserVO">
+	<!-- 쿼리문 작성 -->  
+			SELECT 
+				 P_IDX
+				,S_ID
+				,P_NAME
+				,P_PRICE
+				,P_REGDATE
+				,P_MODDATE
+				,P_IMAGE
+				,P_CONTENT
+				,P_TAGE
+				,P_SDATE
+				,P_EDATE
+				,P_STATUS
+				,A_ID
+				,P_Q
+			FROM
+				PRODUCT
+			WHERE 1=1
+			AND S_ID = #s_id#
+			ORDER BY P_REGDATE DESC
+	</select>
+
+	<select id="sellerSelectDealList" parameterClass="DealUserVO" resultClass="DealUserVO">
+	SELECT
+		rn,
+		P_IDX,
+		P_NAME,
+		D_Q,
+		P_PRICE,
+		D_REGDATE,
+		S_NICKNAME,
+		D_ING,
+		D_EDATE,
+		D_IDX,
+		S_ID,
+		sns_idx,
+		userid,
+		nickname
+	FROM
+	(SELECT
+			rn,
+			A.P_IDX,
+			A.P_NAME,
+			A.D_Q,
+			A.P_PRICE,
+			A.D_REGDATE,
+			A.S_NICKNAME,
+			A.D_ING,
+			A.D_EDATE,
+			A.D_IDX,
+			A.S_ID,
+			A.sns_idx,
+			B.userid,
+			B.nickname
+		FROM
+		(SELECT
+			rn,
+			A.P_IDX,
+			A.P_NAME,
+			A.D_Q,
+			A.P_PRICE,
+			A.D_REGDATE,
+			B.S_NICKNAME,
+			A.D_ING,
+			A.D_EDATE,
+			A.D_IDX,
+			A.S_ID,
+			A.sns_idx
+		FROM
+			(SELECT
+				@ROWNUM:=@ROWNUM+1 AS rn,
+				A.P_IDX,
+				B.P_NAME,
+				A.D_Q,
+				B.P_PRICE,
+				A.D_REGDATE,
+				A.D_ING,
+				A.D_EDATE,
+				A.D_IDX,
+				A.S_ID,
+				A.sns_idx
+			FROM DEAL A, PRODUCT B, (SELECT @ROWNUM:=0) R
+			WHERE 1 = 1
+			AND A.P_IDX = B.P_IDX) A, SELLER B
+		WHERE 1 = 1
+		AND A.S_ID = B.S_ID) A, SNSPROFILE B
+	WHERE 1 = 1
+	AND A.sns_idx = B.sns_idx) A
+	WHERE 1 = 1		
+	AND S_ID = #s_id#
+			ORDER BY RN ASC
+	</select>
+	
+		<select id="sellerSelectReviewListt" parameterClass="ReviewVO" resultClass="ReviewVO">
+			SELECT
+			  A.S_ID
+			, A.R_CONTENT
+			, A.R_IDX
+			, A.P_IDX 
+			, A.SNS_IDX
+			, A.R_DELYN
+			, A.R_DIV
+			, A.SNS_SCORE
+			, A.R_REGDATE
+			, A.SELLER_SCORE
+			, B.P_NAME
+		FROM
+			REVIEW A, PRODUCT B
+		WHERE 
+			1 = 1
+		AND 
+			A.P_IDX = B.P_IDX
+		AND
+			A.S_ID = #s_id#
+	</select>
+	
+	
+</sqlMap>

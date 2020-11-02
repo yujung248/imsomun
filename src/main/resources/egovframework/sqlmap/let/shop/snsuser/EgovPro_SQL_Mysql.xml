@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SnsProfile">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="SnsProfileVO" type="egovframework.let.shop.mng.snsprofile.service.SnsProfileMngVO"/>
+	<typeAlias  alias="SnsProfileUserVO" type="egovframework.let.shop.user.snsprofile.service.SnsProfileUserVO"/>
+	<typeAlias  alias="SnsProfile" type="egovframework.let.shop.mng.snsprofile.service.SnsProfileMng"/>
+	<typeAlias  alias="SnsProfileMngVO" type="egovframework.let.shop.mng.snsprofile.service.SnsProfileMngVO"/>
+					
+	<resultMap id="snsProfileList" class="egovframework.let.shop.user.snsprofile.service.SnsProfileUserVO"> <!-- property는 vo값 -->
+		<result property="sns_idx" column="SNS_IDX" columnIndex="1"/>
+		<result property="userid" column="USERID" columnIndex="2"/>						 <!-- collum 은 db의 컬럼값 -->
+		<result property="snscode" column="SNSCODE" columnIndex="3"/>			 <!--  db의 컬럼 순서 -->
+		<result property="nickname" column="NICKNAME" columnIndex="4"/>
+		<result property="email" column="EMAIL" columnIndex="5"/>
+		<result property="reg_date" column="REG_DATE" columnIndex="6"/>
+		<result property="del_yn" column="DEL_YN" columnIndex="7"/>
+	</resultMap>
+	
+	<select id="EgovMngProDAO.selectMngProList" parameterClass="SnsProfileVO" resultMap="snsProfileList" >
+		<![CDATA[
+			SELECT
+				   SNS_IDX 
+				  ,USERID
+				  ,SNSCODE
+				  ,NICKNAME
+				  ,EMAIL
+				  ,REG_DATE
+				  ,DEL_YN
+			FROM
+				SNSPROFILE
+			WHERE 1=1
+		]]>				
+			<isEqual prepend="AND" property="searchCnd" compareValue="0"> <!-- prepend로 and,or...쓰고 searchCnd값이 0이면 쿼리 문을 실행 시킨다. -->
+				<![CDATA[	USERID LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCnd" compareValue="1">
+				<![CDATA[	SNSCODE LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>	
+		<![CDATA[			
+			ORDER BY REG_DATE DESC
+			LIMIT #recordCountPerPage# OFFSET #firstIndex#
+		]]>					
+	</select>
+	
+	<select id="EgovMngProDAO.selectMngProListCnt" parameterClass="SnsProfileVO" resultClass="java.lang.Integer" >
+		<![CDATA[
+			SELECT 
+				COUNT(USERID)
+			FROM
+				SNSPROFILE
+			WHERE 1=1
+		]]>				
+			<isEqual prepend="AND" property="searchCnd" compareValue="0"> <!-- prepend로 and,or...쓰고 searchCnd값이 0이면 쿼리 문을 실행 시킨다. -->
+				<![CDATA[	USERID LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCnd" compareValue="1">
+				<![CDATA[	SNSCODE LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>	
+	</select>
+	
+	<insert id="EgovSnsUserDAO.insertSnsUser" parameterClass="SnsProfileUserVO">
+		<![CDATA[
+			INSERT INTO SNSPROFILE
+			(USERID, SNSCODE, NICKNAME, EMAIL, REG_DATE, DEL_YN)
+			VALUES
+			(#userid#,#snscode#,#nickname#,#email#,SYSDATE(),'Y')
+		]]>
+	</insert>
+	
+	<select id="EgovSnsUserDAO.checkUserLogin" parameterClass="SnsProfileUserVO" resultClass="Integer" >
+		<![CDATA[
+			SELECT 
+					COUNT(*)
+			FROM 
+					SNSPROFILE 
+			WHERE 	
+					1=1 AND USERID=#userid#
+		]]>
+	</select>
+	
+	<select id="selectUserSnsprofile" parameterClass="SnsProfileUserVO" resultClass="SnsProfileUserVO">
+		SELECT 	*
+		FROM 	SNSPROFILE
+		WHERE 	sns_idx = #sns_idx#
+	</select>
+	
+	<select id="selectSnsprofileMng" parameterClass="SnsProfileMngVO" resultClass="SnsProfileMngVO">
+		SELECT 	*
+		FROM 	SNSPROFILE
+		WHERE 	sns_idx = #sns_idx#
+	</select>
+	<select id="EgovSnsUserDAO.selectSnsidx" parameterClass="java.lang.String" resultClass="SnsProfileUserVO">
+		SELECT 	SNS_IDX
+		FROM 	SNSPROFILE
+		WHERE 	USERID = #userid#
+	</select>
+	<!-- <insert id="EgovMngProductDAO.insertMngProduct" parameterClass="Product">
+		<![CDATA[
+			INSERT INTO 테이블명
+			(컬럼명, 날짜)
+			VALUES
+			( #변수명#, SYSDATE()  
+			 )			
+		]]>
+	</insert> -->
+	
+	<!-- <update id="EgovMngProductDAO.updateMngProduct" parameterClass="Product">
+ 		<![CDATA[
+			UPDATE 테이블명 SET 
+				컬럼명 = #변수명#,
+				LAST_UPDT_PNTTM = SYSDATE()
+			WHERE 컬럼명 = #변수명#
+ 		]]>
+ 	</update> -->
+</sqlMap>

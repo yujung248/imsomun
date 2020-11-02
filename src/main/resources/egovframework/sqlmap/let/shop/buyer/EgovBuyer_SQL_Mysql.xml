@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Buyer">
+
+	<typeAlias alias="BuyerVO" type="egovframework.let.shop.mng.buyer.service.impl.BuyerMngVO" /> 
+	<typeAlias alias="BuyerUserVO" type="egovframework.let.shop.user.buyer.service.impl.BuyerUserVO" /> 
+	<typeAlias alias="DealUserVO" type="egovframework.let.shop.user.deal.service.impl.DealUserVO" /> 
+	<typeAlias alias="LikeUserVO" type="egovframework.let.shop.user.like.service.impl.LikeUserVO" /> 
+	<typeAlias alias="Buyer" type="egovframework.let.shop.mng.buyer.service.BuyerMng" />
+
+	<select id="BuyerListCnt" parameterClass="BuyerVO" resultClass="int">
+		SELECT COUNT(*)
+		FROM SNSPROFILE
+		WHERE 1=1
+		<isEqual prepend="AND" property="searchCnd" compareValue="0"> <!-- prepend로 and,or...쓰고 searchCnd값이 0이면 쿼리 문을 실행 시킨다. -->
+				<![CDATA[	USERID LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+		</isEqual>
+		<isEqual prepend="AND" property="searchCnd" compareValue="1">
+				<![CDATA[	NICKNAME LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+		</isEqual>
+				<isEqual prepend="AND" property="searchCnd" compareValue="2">
+				<![CDATA[	EMAIL LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+		</isEqual>
+
+	</select>
+	<select id="BuyerSelectList" resultClass="BuyerVO">
+		SELECT *
+		FROM SNSPROFILE
+		WHERE 1=1
+		<isEqual prepend="AND" property="searchCnd" compareValue="0"> <!-- prepend로 and,or...쓰고 searchCnd값이 0이면 쿼리 문을 실행 시킨다. -->
+				<![CDATA[	USERID LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+		</isEqual>
+		<isEqual prepend="AND" property="searchCnd" compareValue="1">
+				<![CDATA[	NICKNAME LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+		</isEqual>
+				<isEqual prepend="AND" property="searchCnd" compareValue="2">
+				<![CDATA[	EMAIL LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+		</isEqual>
+		ORDER BY REG_DATE DESC
+		LIMIT #recordCountPerPage# OFFSET #firstIndex#
+	</select>
+	
+	<select id="BuyerSelect" resultClass="BuyerVO" parameterClass="BuyerVO">
+		SELECT *
+		FROM SNSPROFILE
+		WHERE sns_idx = #sns_idx#
+	</select>
+	
+	<select id="selectUserBuyer" resultClass="BuyerUserVO" parameterClass="BuyerUserVO">
+		SELECT *
+		FROM SNSPROFILE
+		WHERE sns_idx = #sns_idx#
+	</select>
+	
+	<update id="buyerUpdate" parameterClass="BuyerVO">
+		UPDATE SNSPROFILE
+		SET 
+			userid = #userid#,
+			snscode = #snscode#,
+			nickname = #nickname#,
+			email = #email#,
+			del_yn = #del_yn#
+		WHERE sns_idx = #sns_idx#
+	</update>
+	
+	<update id="updateUserBuyer" parameterClass="BuyerUserVO">
+		UPDATE SNSPROFILE
+		SET 
+			nickname = #nickname#,
+			email = #email#
+		WHERE sns_idx = #sns_idx#
+	</update>
+	
+	<update id="updateMngBuyerStateChange" parameterClass="int">
+	UPDATE SNSPROFILE
+	SET del_yn = 
+					CASE 
+					WHEN del_yn = 'Y'
+						THEN 'N'
+						ELSE 'Y'
+					END
+	WHERE sns_idx = #sns_idx#
+	</update>
+	
+	<select id="listBuyerUserLike" parameterClass="int" resultClass="LikeUserVO">
+		SELECT *
+		FROM PLIKE l, PRODUCT p
+		WHERE 
+			l.p_idx = p.p_idx
+		AND
+			sns_idx = #sns_idx#
+		ORDER BY L_REGDATE DESC
+		LIMIT 4
+	</select>
+	
+	<select id="listBuyerUserDeal" parameterClass="int" resultClass="DealUserVO">
+		SELECT 
+			d.s_id,
+			d.sns_idx,
+			d.d_idx,
+			d.p_idx,
+			d.d_ing,
+			d.d_regdate,
+			p.p_name,
+			p.p_image
+		FROM DEAL d, PRODUCT p
+		WHERE 
+			d.p_idx = p.p_idx
+		AND
+			d.sns_idx = #sns_idx#
+		ORDER BY D_REGDATE DESC
+		LIMIT 4
+	</select>
+	
+	<select id="listBuyerUserBasket" parameterClass="int" resultClass="egovframework.let.shop.user.basket.service.impl.BasketProductUserVO">
+		SELECT *
+		FROM BASKET ba, PRODUCT p
+		WHERE 
+			ba.p_idx = p.p_idx
+		AND
+			sns_idx = #sns_idx#
+		ORDER BY BA_REG_DATE DESC
+		LIMIT 4
+	</select>
+	
+
+
+</sqlMap>

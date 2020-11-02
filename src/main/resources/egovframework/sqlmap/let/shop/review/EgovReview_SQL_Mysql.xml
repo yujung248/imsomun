@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ReviewList">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="ReviewVO" type="egovframework.let.shop.user.review.service.ReviewUserVO"/>
+	<typeAlias  alias="Review" type="egovframework.let.shop.user.review.service.ReviewUser"/>
+	<typeAlias  alias="ReviewMngVO" type="egovframework.let.shop.mng.review.service.ReviewMngVO"/>
+	<typeAlias  alias="ReviewMng" type="egovframework.let.shop.mng.review.service.ReviewMng"/>
+					
+	
+	<resultMap id="ReviewList" class="egovframework.let.shop.user.review.service.ReviewUserVO"> <!-- property는 vo값 -->
+		<result property="s_id" column="S_ID" columnIndex="1"/>
+		<result property="sns_idx" column="SNS_IDX" columnIndex="2"/>							<!-- collum 은 db의 컬럼값 -->
+		<result property="r_idx" column="R_IDX" columnIndex="3"/>			  					<!-- db의 컬럼 순서 -->
+		<result property="p_idx" column="P_IDX" columnIndex="4"/>
+		<result property="r_content" column="R_CONTENT" columnIndex="5"/>
+		<result property="r_regdate" column="R_REGDATE" columnIndex="6"/>
+		<result property="r_delyn" column="R_DELYN" columnIndex="7"/>
+		<result property="r_div" column="R_DIV" columnIndex="8"/>
+		<result property="sns_score" column="SNS_SCORE" columnIndex="9"/>
+		<result property="seller_score" column="SELLER_SCORE" columnIndex="10"/>
+		<result property="nickname" column="NICKNAME" columnIndex="11"/>
+		<result property="s_nickname" column="S_NICKNAME" columnIndex="12"/>
+		<result property="original_file_name" column="ORIGINAL_FILE_NAME" columnIndex="13"/>
+		<result property="p_name" column="P_NAME" columnIndex="14"/>
+	</resultMap>
+
+	<select id="EgovReviewDAO.selectReviewList" parameterClass="ReviewVO" resultMap="ReviewList" >
+		<![CDATA[
+			SELECT
+				S_ID
+				, SNS_IDX
+				, R_IDX 
+				, P_IDX
+				, R_CONTENT
+				, R_REGDATE
+				, R_DELYN
+				, R_DIV
+				, SNS_SCORE
+				, SELLER_SCORE
+				, NICKNAME
+				, S_NICKNAME
+				, A.ORIGINAL_FILE_NAME
+				, P_NAME
+			FROM(
+				SELECT
+						A.S_ID
+						, A.SNS_IDX
+						, A.R_IDX 
+						, A.P_IDX
+						, A.R_CONTENT
+						, A.R_REGDATE
+						, A.R_DELYN
+						, A.R_DIV
+						, A.SNS_SCORE
+						, A.SELLER_SCORE
+						, A.NICKNAME
+						, A.ORIGINAL_FILE_NAME
+						, A.S_NICKNAME
+						, B.P_NAME
+				FROM(
+					SELECT 
+						A.S_ID
+						, A.SNS_IDX
+						, A.R_IDX 
+						, A.P_IDX
+						, A.R_CONTENT
+						, A.R_REGDATE
+						, A.R_DELYN
+						, A.R_DIV
+						, A.SNS_SCORE
+						, A.SELLER_SCORE
+						, A.NICKNAME
+						, A.ORIGINAL_FILE_NAME
+						, B.S_NICKNAME
+					FROM(	
+						SELECT 
+							A.S_ID
+							, A.SNS_IDX
+							, A.R_IDX 
+							, A.P_IDX
+							, A.R_CONTENT
+							, A.R_REGDATE
+							, A.R_DELYN
+							, A.R_DIV
+							, A.SNS_SCORE
+							, A.SELLER_SCORE
+							, A.ORIGINAL_FILE_NAME
+							, B.NICKNAME
+						FROM REVIEW A, SNSPROFILE B
+						WHERE 1=1
+						AND A.R_DELYN='N'
+						AND A.SNS_IDX=B.SNS_IDX
+					) A, SELLER B
+					WHERE 1=1
+					AND A.S_ID=B.S_ID
+				) A, PRODUCT B
+				WHERE 1=1
+				AND A.P_IDX=B.P_IDX
+			) A WHERE R_DIV = 2
+		]]>					<!-- 2는 구매자 -->
+			<isNotNull property="p_idx">
+				<isNotEmpty property="p_idx">
+					<isNotEqual prepend="AND" property="p_idx" compareValue="0">
+						<![CDATA[	P_IDX = #p_idx# 		]]>
+					</isNotEqual>
+				</isNotEmpty>	
+			</isNotNull>	
+			<isEqual prepend="AND" property="searchCnd" compareValue="0"> <!-- prepend로 and,or...쓰고 searchCnd값이 0이면 쿼리 문을 실행 시킨다. -->
+				<![CDATA[	NICKNAME LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+		<![CDATA[			
+			ORDER BY R_REGDATE DESC
+			LIMIT #recordCountPerPage# OFFSET #firstIndex#
+		]]>					
+	</select>
+	<!-- 1는 판매자 -->
+	
+	
+	<select id="EgovReviewDAO.selectReviewAvg" parameterClass="ReviewVO" resultClass="java.lang.Integer" >
+		<![CDATA[
+			SELECT 
+				AVG(SNS_SCORE) AS SNS_SCORE
+			FROM 
+				REVIEW
+			WHERE
+				P_IDX = #p_idx#
+			AND
+				R_DELYN = 'N'
+		]]>					
+	</select>
+	
+	<select id="EgovReviewDAO.UserSellerReview" parameterClass="ReviewVO" resultClass="ReviewVO">
+	<![CDATA[
+		SELECT
+			  A.S_ID
+			, A.R_CONTENT
+			, A.R_IDX
+			, A.P_IDX 
+			, A.SNS_IDX
+			, A.R_DELYN
+			, A.R_DIV
+			, A.SNS_SCORE
+			, A.R_REGDATE
+			, A.SELLER_SCORE
+			, A.ORIGINAL_FILE_NAME
+			, B.P_NAME
+		FROM
+			REVIEW A, PRODUCT B
+		WHERE 
+			1 = 1
+		AND 
+			A.P_IDX = B.P_IDX
+		AND
+			A.S_ID = #s_id#
+	]]>
+	</select>
+	
+	<update id="EgovReviewDAO.updateUserReview" parameterClass="ReviewVO">
+	 		<![CDATA[
+				UPDATE REVIEW SET 
+					R_CONTENT = #r_content#
+				WHERE R_IDX = #r_idx#
+	 		]]>
+	</update>
+	
+	<update id="EgovReviewDAO.delUserReview" parameterClass="ReviewVO">
+	 		<![CDATA[
+				UPDATE REVIEW SET 
+					R_DELYN = 'Y'
+				WHERE R_IDX = #r_idx#
+	 		]]>
+	</update>
+	
+	<insert id="EgovReviewDAO.insertMainUserReview" parameterClass="ReviewVO">
+	<selectKey resultClass="int" keyProperty="r_idx">
+		SELECT 
+			CASE 
+				WHEN 
+					MAX(R_IDX) IS NULL 
+				THEN 
+					1 
+				ELSE
+					MAX(R_IDX)+1 
+				END
+		FROM
+			REVIEW
+	</selectKey>
+		<![CDATA[
+			INSERT INTO REVIEW(
+				  S_ID
+				, SNS_IDX
+				, R_IDX
+				, P_IDX
+				, R_CONTENT
+				, R_REGDATE
+				, R_DELYN
+				, R_DIV
+				, SNS_SCORE
+				, SELLER_SCORE
+				, ORIGINAL_FILE_NAME
+				, STORED_FILE_NAME
+				, FILE_SIZE
+				)
+			VALUES
+			(
+				  #s_id#
+				, #sns_idx# 
+				, #r_idx#, #p_idx#
+				, #r_content#
+				, SYSDATE()
+				, 'N'
+				, #r_div#
+				, #sns_score# 
+				, #seller_score#
+				, #original_file_name#
+				, #stored_file_name#
+				, #file_size#
+			)			
+		]]>
+	</insert>
+	
+	<!-- <select id="EgovReviewDAO.selectFileMax" resultClass="java.lang.Integer" >
+		<![CDATA[
+			SELECT 
+				ifnull(MAX(TFILE_IDX),1) AS TFILE_IDX
+			FROM
+				TFILE
+			WHERE 1=1
+		]]>				
+	</select>
+	
+	<insert id="EgovReviewDAO.insertFileUserReview" parameterClass="ReviewVO">
+		<selectKey resultClass="int" keyProperty="tfile_idx">
+			SELECT 
+				CASE 
+					WHEN 
+						MAX(TFILE_IDX) IS NULL 
+					THEN 
+						1 
+					ELSE
+						MAX(TFILE_IDX)+1 
+					END
+			FROM
+				TFILE
+		</selectKey>
+			<isNotEmpty>
+				<![CDATA[
+					INSERT INTO TFILE(
+						  TFILE_IDX
+						, ORIGINAL_FILE_NAME
+						, STORED_FILE_NAME
+						, FILE_SIZE
+					VALUES(
+						 #tfile_idx#
+						,#original_file_name#
+						,#stored_file_name#
+						,#file_size#
+					)
+				]]>
+			</isNotEmpty>
+	</insert> -->
+<!-- 관리자용관리자용관리자용관리자용관리자용관리자용관리자용관리자용관리자용관리자용관리자용관리자용관리자용관리자용관리자용관리자용 -->
+	<resultMap id="MngReviewList" class="egovframework.let.shop.mng.review.service.ReviewMngVO"> 
+		<result property="r_idx" column="R_IDX" columnIndex="1"/>
+		<result property="p_idx" column="P_IDX" columnIndex="2"/>
+		<result property="p_name" column="P_NAME" columnIndex="3"/>
+		<result property="s_nickname" column="S_NICKNAME" columnIndex="4"/>
+		<result property="sns_idx" column="SNS_IDX" columnIndex="5"/>
+		<result property="r_content" column="R_CONTENT" columnIndex="6"/>			  
+		<result property="r_regdate" column="R_REGDATE" columnIndex="7"/>
+		<result property="r_delyn" column="R_DELYN" columnIndex="8"/>
+		<result property="r_div" column="R_DIV" columnIndex="9"/>
+		<result property="sns_score" column="SNS_SCORE" columnIndex="10"/>
+		<result property="seller_score" column="SELLER_SCORE" columnIndex="11"/>
+		<result property="nickname" column="NICKNAME" columnIndex="12"/>						 
+	</resultMap>
+
+<select id="EgovMngReviewDAO.selectMngProList" parameterClass="ReviewMngVO" resultMap="MngReviewList" >
+		<![CDATA[
+	SELECT
+	  R_IDX
+	, P_IDX
+	, P_NAME
+	, S_NICKNAME
+	, SNS_IDX
+	, R_CONTENT
+	, R_REGDATE
+	, R_DELYN
+	, R_DIV
+	, SNS_SCORE
+	, SELLER_SCORE
+	, NICKNAME
+	FROM(
+	SELECT
+	     A.R_IDX
+		, A.P_IDX
+		, A.P_NAME
+		, A.S_NICKNAME
+		, A.SNS_IDX
+		, A.R_CONTENT
+		, A.R_REGDATE
+		, A.R_DELYN
+		, A.R_DIV
+		, A.SNS_SCORE
+		, A.SELLER_SCORE
+		, B.NICKNAME
+	FROM(
+SELECT
+			  A.R_IDX
+			, A.P_IDX
+			, A.SNS_IDX
+			, A.R_REGDATE
+			, A.R_DIV
+			, A.R_CONTENT
+			, A.R_DELYN
+			, A.SNS_SCORE
+			, A.SELLER_SCORE
+			, A.P_NAME
+			, B.S_NICKNAME
+			FROM(
+SELECT
+				  A.R_IDX
+				, A.P_IDX
+				, A.SNS_IDX
+				, A.R_REGDATE
+				, A.R_DIV
+				, A.S_ID
+				, A.R_CONTENT
+				, A.R_DELYN
+				, A.SNS_SCORE
+				, A.SELLER_SCORE
+				, B.P_NAME
+					FROM
+						REVIEW A, PRODUCT B
+					WHERE
+					 	1 = 1
+					AND A.P_IDX = B.P_IDX
+					)A, SELLER B
+			WHERE 
+				1 = 1
+			AND A.S_ID = B.S_ID
+			)A, SNSPROFILE B
+	WHERE
+		1 =  1
+	AND
+	A.SNS_IDX = B.SNS_IDX
+)A
+WHERE
+	1 = 1
+		]]>
+		<isNotNull property="r_idx">
+				<isNotEmpty property="r_idx">
+					<isNotEqual prepend="AND" property="r_idx" compareValue="0">
+						<![CDATA[	R_IDX = #r_idx# 		]]>
+					</isNotEqual>
+				</isNotEmpty>	
+			</isNotNull>	
+		<isEqual prepend="AND" property="searchCnd" compareValue="0"> <!-- prepend로 and,or...쓰고 searchCnd값이 0이면 쿼리 문을 실행 시킨다. -->
+				<![CDATA[	A.P_NAME LIKE CONCAT ('%', #searchWrd#,'%') OR A.S_NICKNAME LIKE CONCAT ('%', #searchWrd#,'%') OR A.R_CONTENT LIKE CONCAT ('%', #searchWrd#,'%') OR A.NICKNAME LIKE CONCAT('%', #searchWrd#,'%') ]]>
+		</isEqual> 
+		<isNotNull prepend = "AND" property="r_div">
+			A.R_DIV = #r_div#
+		</isNotNull>
+		<![CDATA[			
+			ORDER BY R_IDX DESC
+			LIMIT #recordCountPerPage# OFFSET #firstIndex#
+		]]>
+</select>
+
+<select id="EgovMngReviewDAO.selectMngReviewListCnt" parameterClass="ReviewMngVO" resultClass="java.lang.Integer" >
+		<![CDATA[
+				SELECT
+	  				COUNT(R_IDX)
+				FROM(
+					SELECT
+					     A.R_IDX
+						, A.P_IDX
+						, A.P_NAME
+						, A.S_NICKNAME
+						, A.SNS_IDX
+						, A.R_CONTENT
+						, A.R_REGDATE
+						, A.R_DELYN
+						, A.R_DIV
+						, A.SNS_SCORE
+						, A.SELLER_SCORE
+						, B.NICKNAME
+					FROM(
+						SELECT
+							  A.R_IDX
+							, A.P_IDX
+							, A.SNS_IDX
+							, A.R_REGDATE
+							, A.R_DIV
+							, A.R_CONTENT
+							, A.R_DELYN
+							, A.SNS_SCORE
+							, A.SELLER_SCORE
+							, A.P_NAME
+							, B.S_NICKNAME
+						FROM(
+							SELECT
+								  A.R_IDX
+								, A.P_IDX
+								, A.SNS_IDX
+								, A.R_REGDATE
+								, A.R_DIV
+								, A.S_ID
+								, A.R_CONTENT
+								, A.R_DELYN
+								, A.SNS_SCORE
+								, A.SELLER_SCORE
+								, B.P_NAME
+							FROM
+								REVIEW A, PRODUCT B
+							WHERE
+					 			1 = 1
+							AND A.P_IDX = B.P_IDX
+							)A, SELLER B
+						WHERE 
+							1 = 1
+						AND A.S_ID = B.S_ID
+						)A, SNSPROFILE B
+					WHERE
+						1 =  1
+						AND
+						A.SNS_IDX = B.SNS_IDX
+					)A
+			WHERE 1 = 1
+		]]>
+			 <isEqual prepend="AND" property="searchCnd" compareValue="0"> <!-- prepend로 and,or...쓰고 searchCnd값이 0이면 쿼리 문을 실행 시킨다. -->
+				<![CDATA[	
+				A.P_NAME LIKE CONCAT ('%', #searchWrd#,'%') 
+				OR A.S_NICKNAME LIKE CONCAT ('%', #searchWrd#,'%') 
+				OR A.R_CONTENT LIKE CONCAT ('%', #searchWrd#,'%') 
+				OR A.NICKNAME LIKE CONCAT('%', #searchWrd#,'%') ]]>
+			</isEqual>
+			<isNotNull prepend = "AND" property="r_div">
+						A.R_DIV = #r_div#
+			</isNotNull>
+	</select>
+	
+	<update id="EgovMngReviewDAO.updateMngUserReview" parameterClass="ReviewMngVO">
+	 		<![CDATA[
+				UPDATE REVIEW SET 
+					R_DELYN = 'Y'
+				WHERE R_IDX = #r_idx#
+	 		]]>
+	</update>
+	
+	<update id="EgovMngReviewDAO.reUpdateMngUserReview" parameterClass="ReviewMngVO">
+	 		<![CDATA[
+				UPDATE REVIEW SET 
+					R_DELYN = 'N'
+				WHERE R_IDX = #r_idx#
+	 		]]>
+	</update>
+	
+	
+	<!-- <select id="EgovMngProDAO.selectMngProListCnt" parameterClass="SnsProfileVO" resultClass="java.lang.Integer" >
+		<![CDATA[
+			SELECT 
+				COUNT(USERID)
+			FROM
+				SNSPROFILE
+			WHERE 1=1
+		]]>				
+			<isEqual prepend="AND" property="searchCnd" compareValue="0"> prepend로 and,or...쓰고 searchCnd값이 0이면 쿼리 문을 실행 시킨다.
+				<![CDATA[	USERID LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCnd" compareValue="1">
+				<![CDATA[	SNSCODE LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>	
+	</select> -->
+	
+	<!-- <insert id="EgovSnsUserDAO.insertSnsUser" parameterClass="SnsProfileVO">
+		<![CDATA[
+			INSERT INTO SNSPROFILE
+			(USERID, SNSCODE, NICKNAME, EMAIL, REG_DATE, DEL_YN)
+			VALUES
+			(#userid#,#snscode#,#nickname#,#email#,SYSDATE(),'N')
+		]]>
+	</insert> -->
+	
+	<!-- <insert id="EgovMngProductDAO.insertMngProduct" parameterClass="Product">
+		<![CDATA[
+			INSERT INTO 테이블명
+			(컬럼명, 날짜)
+			VALUES
+			( #변수명#, SYSDATE()  
+			 )			
+		]]>
+	</insert> -->
+	
+</sqlMap>

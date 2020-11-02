@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:task="http://www.springframework.org/schema/task"
+   xmlns:context="http://www.springframework.org/schema/context"
+   xsi:schemaLocation="http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.1.xsd
+      http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+   <!-- <task:annotation-driven/> -->
+   <!-- <context:component-scan base-package="com.member.log.service.LogXmlScheduler"/> -->
+   <!-- <bean id="logXmlSch" class="egovframework.let.shop.Scheduler.service.SchedulerPro"/> -->
+   <!-- <bean id="logScheduler2" class="com.member.log.service.LogScheduler2"/> -->
+   
+   
+   
+   <task:scheduler id="sch" pool-size="10"/>
+   <task:scheduled-tasks scheduler="sch">
+      <task:scheduled ref="logXmlSch" method="delSch" cron="* * * 1 * ?"/>   
+      <!-- <task:scheduled ref="logXmlSch2" method="insertLog" cron="0/1 * * * * ?"/> -->
+   </task:scheduled-tasks>
+   
+   <bean id="logXmlSch" class="egovframework.let.shop.scheduler.web.SchedulerPro"/>
+   <!-- <bean id="logXmlSch2" class="com.member.log.service.LogXmlScheduler2"/> -->
+   
+</beans>

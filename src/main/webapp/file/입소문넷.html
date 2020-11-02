@@ -1,0 +1,513 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!-- saved from url=(0060)http://localhost:8181/shop/mng/product/EgovMngProductlist.do -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta http-equiv="content-language" content="ko">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="./입소문넷_files/bootstrap.min.css">
+<script src="./입소문넷_files/jquery.min.js.다운로드"></script>
+<script src="./입소문넷_files/popper.min.js.다운로드"></script>
+<script src="./입소문넷_files/bootstrap.min.js.다운로드"></script>
+<title>입소문넷</title>
+</head>
+<body>
+
+
+
+
+
+
+
+<meta http-equiv="content-language" content="ko">
+<title>운영자 상품 관리 페이지입니다</title>
+
+
+
+	
+
+
+
+
+
+
+
+
+
+<meta http-equiv="content-language" content="ko">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="./입소문넷_files/bootstrap.min.css">
+<script src="./입소문넷_files/jquery.min.js.다운로드"></script>
+<script src="./입소문넷_files/popper.min.js.다운로드"></script>
+<script src="./입소문넷_files/bootstrap.min.js.다운로드"></script>
+<title>입소문넷</title>
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+<meta http-equiv="content-language" content="ko">
+<title>입소문넷</title>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#btnlogin").click(function(){	
+			location.href = "/shop/user/EgovUserLoginForm.do";
+		});
+	});
+	$(document).ready(function(){
+		$("#btnlogout").click(function(){	
+			var snscode='';
+			var access_token='';
+			if(snscode=='kakao'){
+				location.href = "https://kauth.kakao.com/oauth/logout?client_id=7e2a4e5240c656b96978c81a1a99fa2a&logout_redirect_uri=http://xn--z92bt9ibqf.net/shop/user/EgovUserLogout.do";
+			}else if(snscode=='naver'){
+				//location.href = "https://nid.naver.com/oauth2.0/token?grant_type=delete&client_id=7e2a4e5240c656b96978c81a1a99fa2a&client_secret=SiffbMIVyj&access_token="+access_token+"&service_provider=NAVER";
+				//winpop=open("https://nid.naver.com/nidlogin.logout");
+				location.href ="http://xn--z92bt9ibqf.net/shop/user/EgovUserLogout.do";
+				//winpop.self.close();
+			}
+		});
+	});
+	$(document).ready(function(){
+		$("#sellerlogout").click(function(){
+			
+			location.href = "/shop/user/seller/sellerLogout.do";
+		});
+	});
+	$(document).ready(function(){
+		$("#adminlogout").click(function(){
+			
+			location.href = "/shop/mng/seller/adminLogout.do";
+		});
+	});
+	$(document).ready(function(){
+		$("#userlogout").click(function(){
+			
+			location.href = "/shop/user/EgovUserLogout.do";
+		});
+	});
+	
+	
+</script>
+
+
+
+<!-- <div class="navbar navbar-expand-sm bg-dark navbar-dark" style="background-color: black; width: 100%"> -->
+<!-- <div class="container"> -->
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark" style="background-color: black; width: 100%">
+<div class="flex-grow-2">
+	<a class="navbar-brand" href="http://localhost:8181/shop/user/main/EgovUserMain.do">Logo</a>
+  	<div class="collapse navbar-collapse" id="collapsibleNavbar">
+	    <ul class="navbar-nav">
+	      <li class="nav-item">
+	       	 
+	      </li>
+		
+	    </ul>
+	</div>
+</div>
+	<div class="flex-grow-1 container">
+	<div class="row" style="padding-left: 35%;">
+		<form class="form-inline" action="http://localhost:8181/shop/user/product/EgovUserProductlist.do">
+	  <input type="hidden" id="searchCnd" name="searchCnd" value="0">
+	  <input class="form-control mr-sm-2" id="searchWrd" name="searchWrd" type="text" placeholder="Search" style="width:400px">
+	  <button class="btn btn-success" type="submit">Search</button>&nbsp;
+	</form>
+				
+	</div>
+	</div>  
+  	<div class="flex-grow-2">
+	<ul class="navbar-nav">
+		
+		 
+	
+		
+			<button type="button" id="btnlogin" class="btn btn-info">login</button>
+			<!-- <button type="button" id="btnSignIn" class="btn btn-danger" >회원가입</button> -->
+		
+
+    </ul>
+</div>
+</nav>
+<!-- </div> -->
+<!-- </div> -->
+
+
+
+<!-- result 값을 이용한 modal -->
+	
+	
+	<form action="http://localhost:8181/shop/mng/product/EgovMngProductDelete.do">
+	<p>
+	</p><div align="center">
+		<input type="button" value="등록" onclick="location.href=&#39;/shop/mng/product/EgovMngProductInsertForm.do&#39;" class="btn btn-primary">
+		
+		&amp;nbsp; 
+		
+		&amp;nbsp; 
+		&nbsp; 
+		<input type="submit" value="삭제" class="btn btn-danger">
+	</div>
+		<p>
+		</p><div class="container-fluid">
+			<div class="container text-center">
+				<div class="row">
+					
+						<div class="col-3">
+
+							<img src="./입소문넷_files/73f512ba-11b1-4b08-b400-ea29c777f2f8_green.jpg" width="270" height="270"> 
+							<span> <input type="checkbox" name="check" id="check" value="1"> 
+							판매자 아이디: shong1
+							</span> <br> 
+							<span>상품명: 수박</span> <br> 
+							<span>가격: 100</span> <br> 
+							<span>상태: Y</span> <br> 
+							<span>재고 수량: 40</span> <br> 
+							<span>업데이트된 날짜: 2020-09-01</span> 
+							<input type="button" value="수정" onclick="location.href=&#39;/shop/mng/product/EgovMngProductUpdateForm.do?p_idx=1&#39;">
+							<p></p>
+						</div>
+					
+						<div class="col-3">
+
+							<img src="./입소문넷_files/135873f7-bad8-4f45-a793-d708970017e3_avo.jpg" width="270" height="270"> 
+							<span> <input type="checkbox" name="check" id="check" value="2"> 
+							판매자 아이디: shong1
+							</span> <br> 
+							<span>상품명: 참외</span> <br> 
+							<span>가격: 200</span> <br> 
+							<span>상태: N</span> <br> 
+							<span>재고 수량: 30</span> <br> 
+							<span>업데이트된 날짜: 2020-09-14</span> 
+							<input type="button" value="수정" onclick="location.href=&#39;/shop/mng/product/EgovMngProductUpdateForm.do?p_idx=2&#39;">
+							<p></p>
+						</div>
+					
+						<div class="col-3">
+
+							<img src="./입소문넷_files/d5b4c955-9a49-40ea-874d-58d0890b959e_f80891db-45cc-4c15-942c-2c7fd3355fa9_yellow.jpg" width="270" height="270"> 
+							<span> <input type="checkbox" name="check" id="check" value="3"> 
+							판매자 아이디: shong2
+							</span> <br> 
+							<span>상품명: 딸기</span> <br> 
+							<span>가격: 7000</span> <br> 
+							<span>상태: Y</span> <br> 
+							<span>재고 수량: 300</span> <br> 
+							<span>업데이트된 날짜: 2020-09-14</span> 
+							<input type="button" value="수정" onclick="location.href=&#39;/shop/mng/product/EgovMngProductUpdateForm.do?p_idx=3&#39;">
+							<p></p>
+						</div>
+					
+						<div class="col-3">
+
+							<img src="./입소문넷_files/avo.jpg" width="270" height="270"> 
+							<span> <input type="checkbox" name="check" id="check" value="4"> 
+							판매자 아이디: shong3
+							</span> <br> 
+							<span>상품명: 아보카도</span> <br> 
+							<span>가격: 5000</span> <br> 
+							<span>상태: N</span> <br> 
+							<span>재고 수량: 40</span> <br> 
+							<span>업데이트된 날짜: 2020-09-24</span> 
+							<input type="button" value="수정" onclick="location.href=&#39;/shop/mng/product/EgovMngProductUpdateForm.do?p_idx=4&#39;">
+							<p></p>
+						</div>
+					
+						<div class="col-3">
+
+							<img src="./입소문넷_files/red2.jpg" width="270" height="270"> 
+							<span> <input type="checkbox" name="check" id="check" value="5"> 
+							판매자 아이디: sid
+							</span> <br> 
+							<span>상품명: 사과</span> <br> 
+							<span>가격: 500</span> <br> 
+							<span>상태: N</span> <br> 
+							<span>재고 수량: 5</span> <br> 
+							<span>업데이트된 날짜: 2020-09-29</span> 
+							<input type="button" value="수정" onclick="location.href=&#39;/shop/mng/product/EgovMngProductUpdateForm.do?p_idx=5&#39;">
+							<p></p>
+						</div>
+					
+						<div class="col-3">
+
+							<img src="./입소문넷_files/red2.jpg" width="270" height="270"> 
+							<span> <input type="checkbox" name="check" id="check" value="6"> 
+							판매자 아이디: sid
+							</span> <br> 
+							<span>상품명: 사과</span> <br> 
+							<span>가격: 500</span> <br> 
+							<span>상태: N</span> <br> 
+							<span>재고 수량: 5</span> <br> 
+							<span>업데이트된 날짜: 2020-09-29</span> 
+							<input type="button" value="수정" onclick="location.href=&#39;/shop/mng/product/EgovMngProductUpdateForm.do?p_idx=6&#39;">
+							<p></p>
+						</div>
+					
+						<div class="col-3">
+
+							<img src="./입소문넷_files/red2.jpg" width="270" height="270"> 
+							<span> <input type="checkbox" name="check" id="check" value="7"> 
+							판매자 아이디: sid
+							</span> <br> 
+							<span>상품명: 사과</span> <br> 
+							<span>가격: 500</span> <br> 
+							<span>상태: N</span> <br> 
+							<span>재고 수량: 5</span> <br> 
+							<span>업데이트된 날짜: 2020-09-29</span> 
+							<input type="button" value="수정" onclick="location.href=&#39;/shop/mng/product/EgovMngProductUpdateForm.do?p_idx=7&#39;">
+							<p></p>
+						</div>
+					
+						<div class="col-3">
+
+							<img src="./입소문넷_files/red2.jpg" width="270" height="270"> 
+							<span> <input type="checkbox" name="check" id="check" value="8"> 
+							판매자 아이디: sid
+							</span> <br> 
+							<span>상품명: 사과</span> <br> 
+							<span>가격: 500</span> <br> 
+							<span>상태: N</span> <br> 
+							<span>재고 수량: 5</span> <br> 
+							<span>업데이트된 날짜: 2020-09-29</span> 
+							<input type="button" value="수정" onclick="location.href=&#39;/shop/mng/product/EgovMngProductUpdateForm.do?p_idx=8&#39;">
+							<p></p>
+						</div>
+					
+						<div class="col-3">
+
+							<img src="./입소문넷_files/pink.jpg" width="270" height="270"> 
+							<span> <input type="checkbox" name="check" id="check" value="9"> 
+							판매자 아이디: sid
+							</span> <br> 
+							<span>상품명:  복숭아</span> <br> 
+							<span>가격: 5000</span> <br> 
+							<span>상태: N</span> <br> 
+							<span>재고 수량: 3</span> <br> 
+							<span>업데이트된 날짜: 2020-10-02</span> 
+							<input type="button" value="수정" onclick="location.href=&#39;/shop/mng/product/EgovMngProductUpdateForm.do?p_idx=9&#39;">
+							<p></p>
+						</div>
+					
+						<div class="col-3">
+
+							<img src="./입소문넷_files/pink.jpg" width="270" height="270"> 
+							<span> <input type="checkbox" name="check" id="check" value="10"> 
+							판매자 아이디: sid
+							</span> <br> 
+							<span>상품명:  복숭아</span> <br> 
+							<span>가격: 5000</span> <br> 
+							<span>상태: N</span> <br> 
+							<span>재고 수량: 3</span> <br> 
+							<span>업데이트된 날짜: 2020-10-02</span> 
+							<input type="button" value="수정" onclick="location.href=&#39;/shop/mng/product/EgovMngProductUpdateForm.do?p_idx=10&#39;">
+							<p></p>
+						</div>
+					
+						<div class="col-3">
+
+							<img src="./입소문넷_files/pink.jpg" width="270" height="270"> 
+							<span> <input type="checkbox" name="check" id="check" value="11"> 
+							판매자 아이디: sid
+							</span> <br> 
+							<span>상품명:  복숭아</span> <br> 
+							<span>가격: 400</span> <br> 
+							<span>상태: N</span> <br> 
+							<span>재고 수량: 3</span> <br> 
+							<span>업데이트된 날짜: 2020-10-02</span> 
+							<input type="button" value="수정" onclick="location.href=&#39;/shop/mng/product/EgovMngProductUpdateForm.do?p_idx=11&#39;">
+							<p></p>
+						</div>
+					
+						<div class="col-3">
+
+							<img src="./입소문넷_files/red.jpg" width="270" height="270"> 
+							<span> <input type="checkbox" name="check" id="check" value="12"> 
+							판매자 아이디: sid
+							</span> <br> 
+							<span>상품명:  딸기</span> <br> 
+							<span>가격: 500</span> <br> 
+							<span>상태: N</span> <br> 
+							<span>재고 수량: 200</span> <br> 
+							<span>업데이트된 날짜: 2020-10-02</span> 
+							<input type="button" value="수정" onclick="location.href=&#39;/shop/mng/product/EgovMngProductUpdateForm.do?p_idx=12&#39;">
+							<p></p>
+						</div>
+					
+						<div class="col-3">
+
+							<img src="./입소문넷_files/red2.jpg" width="270" height="270"> 
+							<span> <input type="checkbox" name="check" id="check" value="200"> 
+							판매자 아이디: sid
+							</span> <br> 
+							<span>상품명: 사과dd</span> <br> 
+							<span>가격: 500</span> <br> 
+							<span>상태: N</span> <br> 
+							<span>재고 수량: 5</span> <br> 
+							<span>업데이트된 날짜: 2020-10-05</span> 
+							<input type="button" value="수정" onclick="location.href=&#39;/shop/mng/product/EgovMngProductUpdateForm.do?p_idx=200&#39;">
+							<p></p>
+						</div>
+					
+						<div class="col-3">
+
+							<img src="./입소문넷_files/red2.jpg" width="270" height="270"> 
+							<span> <input type="checkbox" name="check" id="check" value="203"> 
+							판매자 아이디: sid
+							</span> <br> 
+							<span>상품명: 사과111</span> <br> 
+							<span>가격: 500</span> <br> 
+							<span>상태: N</span> <br> 
+							<span>재고 수량: 5</span> <br> 
+							<span>업데이트된 날짜: 2020-10-07</span> 
+							<input type="button" value="수정" onclick="location.href=&#39;/shop/mng/product/EgovMngProductUpdateForm.do?p_idx=203&#39;">
+							<p></p>
+						</div>
+					
+						<div class="col-3">
+
+							<img src="./입소문넷_files/red2.jpg" width="270" height="270"> 
+							<span> <input type="checkbox" name="check" id="check" value="204"> 
+							판매자 아이디: shong1
+							</span> <br> 
+							<span>상품명: 1212</span> <br> 
+							<span>가격: 1212</span> <br> 
+							<span>상태: 121</span> <br> 
+							<span>재고 수량: 121</span> <br> 
+							<span>업데이트된 날짜: 2020-10-07</span> 
+							<input type="button" value="수정" onclick="location.href=&#39;/shop/mng/product/EgovMngProductUpdateForm.do?p_idx=204&#39;">
+							<p></p>
+						</div>
+					
+						<div class="col-3">
+
+							<img src="./입소문넷_files/f80891db-45cc-4c15-942c-2c7fd3355fa9_yellow.jpg" width="270" height="270"> 
+							<span> <input type="checkbox" name="check" id="check" value="205"> 
+							판매자 아이디: shong1
+							</span> <br> 
+							<span>상품명: f43</span> <br> 
+							<span>가격: 3</span> <br> 
+							<span>상태: 3</span> <br> 
+							<span>재고 수량: 3</span> <br> 
+							<span>업데이트된 날짜: 2020-10-07</span> 
+							<input type="button" value="수정" onclick="location.href=&#39;/shop/mng/product/EgovMngProductUpdateForm.do?p_idx=205&#39;">
+							<p></p>
+						</div>
+					
+						<div class="col-3">
+
+							<img src="./입소문넷_files/071c7b3f-d6a4-4123-9fe2-f4a945ed0372_avo.jpg" width="270" height="270"> 
+							<span> <input type="checkbox" name="check" id="check" value="206"> 
+							판매자 아이디: shong1
+							</span> <br> 
+							<span>상품명: 1</span> <br> 
+							<span>가격: 1</span> <br> 
+							<span>상태: N</span> <br> 
+							<span>재고 수량: 5</span> <br> 
+							<span>업데이트된 날짜: 2020-10-08</span> 
+							<input type="button" value="수정" onclick="location.href=&#39;/shop/mng/product/EgovMngProductUpdateForm.do?p_idx=206&#39;">
+							<p></p>
+						</div>
+					
+						<div class="col-3">
+
+							<img src="./입소문넷_files/e3c93746-eec9-487f-81e4-1904109c3921_green.jpg" width="270" height="270"> 
+							<span> <input type="checkbox" name="check" id="check" value="207"> 
+							판매자 아이디: shong1
+							</span> <br> 
+							<span>상품명: 사과3</span> <br> 
+							<span>가격: 500</span> <br> 
+							<span>상태: 3</span> <br> 
+							<span>재고 수량: 3</span> <br> 
+							<span>업데이트된 날짜: 2020-10-08</span> 
+							<input type="button" value="수정" onclick="location.href=&#39;/shop/mng/product/EgovMngProductUpdateForm.do?p_idx=207&#39;">
+							<p></p>
+						</div>
+					
+						<div class="col-3">
+
+							<img src="./입소문넷_files/f806c25d-3239-4b75-ade2-9f593656c408_" width="270" height="270"> 
+							<span> <input type="checkbox" name="check" id="check" value="208"> 
+							판매자 아이디: shong1
+							</span> <br> 
+							<span>상품명: 1</span> <br> 
+							<span>가격: 11</span> <br> 
+							<span>상태: N</span> <br> 
+							<span>재고 수량: 5</span> <br> 
+							<span>업데이트된 날짜: 2020-10-12</span> 
+							<input type="button" value="수정" onclick="location.href=&#39;/shop/mng/product/EgovMngProductUpdateForm.do?p_idx=208&#39;">
+							<p></p>
+						</div>
+					
+						<div class="col-3">
+
+							<img src="./입소문넷_files/d87867d2-8aff-43f8-9d23-b8a38660e589_" width="270" height="270"> 
+							<span> <input type="checkbox" name="check" id="check" value="209"> 
+							판매자 아이디: shong1
+							</span> <br> 
+							<span>상품명: 1</span> <br> 
+							<span>가격: 1</span> <br> 
+							<span>상태: N</span> <br> 
+							<span>재고 수량: 5</span> <br> 
+							<span>업데이트된 날짜: 2020-10-12</span> 
+							<input type="button" value="수정" onclick="location.href=&#39;/shop/mng/product/EgovMngProductUpdateForm.do?p_idx=209&#39;">
+							<p></p>
+						</div>
+					
+				</div>
+			</div>
+		</div>
+	</form>
+	
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="./입소문넷_files/w3.css">
+<link rel="stylesheet" href="./입소문넷_files/css">
+<link rel="stylesheet" href="./입소문넷_files/font-awesome.min.css">
+<link rel="stylesheet" href="./입소문넷_files/font-awesome.min(1).css">
+ <link href="./입소문넷_files/fontawesome.css" rel="stylesheet">
+  <link href="./입소문넷_files/brands.css" rel="stylesheet">
+  <link href="./입소문넷_files/solid.css" rel="stylesheet">
+<style>
+body {
+  min-height: 100vh; /* ìµì ëì´ë¥¼ ì§ì  */
+  display: flex;
+  flex-direction: column;
+}
+
+footer {
+  margin-top: auto; /* ìµì ëì´ íë¨ìì ìëì¼ë¡ ë»ì´ëê°ëë¡ ì¤ì  */
+}
+
+/* optional */
+main {
+  margin: 0 auto;
+  /* or: align-self: center */
+  max-width: 80ch;
+}
+</style>
+
+
+<!-- Footer -->
+<footer class="w3-container w3-padding-64 w3-center w3-opacity w3-light-grey w3-xlarge" style="margin-bottom: 0px">
+  <i class="fa fa-facebook-official w3-hover-opacity"></i>
+  <i class="fa fa-instagram w3-hover-opacity"></i>
+  <i class="fa fa-snapchat w3-hover-opacity"></i>
+  <a href="http://localhost:8181/shop/mng/admin/AdminLogin.do"><i class="fa fa-key"></i></a>
+  <i class="fa fa-twitter w3-hover-opacity"></i>
+  <i class="fa fa-linkedin w3-hover-opacity"></i>
+  </footer>
+
+
+
+
+
+</body></html>

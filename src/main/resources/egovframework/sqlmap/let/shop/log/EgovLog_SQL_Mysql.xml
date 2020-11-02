@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="MLog">
+
+	<typeAlias alias="egovMap" 	 type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias alias="LogMngVO"  type="egovframework.let.shop.mng.log.service.impl.LogMngVO"/> <!-- db에서 세터로 받아넣는 -->
+	<typeAlias alias="LogMng" 	 type="egovframework.let.shop.mng.log.service.LogMng"/>
+	
+	<resultMap id="LogList" class="LogMngVO"> <!-- property는 vo값 -->
+		<result property="log_idx" 	column="LOG_IDX"  	columnIndex="1"/>
+		<result property="s_id" 	column="S_ID" 	  	columnIndex="2"/>
+		<result property="sns_idx" 	column="SNS_IDX"  	columnIndex="3"/>
+		<result property="nickname" column="NICKNAME" 	columnIndex="4"/>
+		<result property="ac_page" 	column="AC_PAGE" 	columnIndex="5"/>
+		<result property="ac_spec" 	column="AC_SPEC"   	columnIndex="6"/>
+		<result property="log_ip" 	column="LOG_IP" 	columnIndex="7"/>
+		<result property="log_date" column="LOG_DATE" 	columnIndex="8"/>
+	</resultMap>
+	
+	<select id="selectLogMngList" parameterClass="LogMngVO" resultMap="LogList" >
+	<!-- 쿼리문 작성 -->
+		<![CDATA[  
+			SELECT 
+				 L.LOG_IDX,
+				 L.S_ID,
+				 L.SNS_IDX,
+				 S.nickname,
+				 L.AC_PAGE,
+				 L.AC_SPEC,
+				 L.LOG_IP,
+				 L.LOG_DATE
+			FROM SNSPROFILE S, MLOG L
+			WHERE 1=1
+				AND S.sns_idx = L.SNS_IDX
+		]]>
+			<isEqual prepend="AND" property="searchCnd" compareValue="0">
+				<![CDATA[	S_ID LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCnd" compareValue="1">
+				<![CDATA[	L.SNS_IDX LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+			ORDER BY L.LOG_DATE DESC
+			LIMIT #recordCountPerPage# OFFSET #firstIndex#	
+	</select>
+	
+
+	<select id="selectMngLogListCnt" parameterClass="LogMngVO" resultClass="java.lang.Integer" >
+		<![CDATA[
+			SELECT count(LOG_IDX)
+			FROM
+				MLOG
+			WHERE 1=1
+		]]>
+			<isEqual prepend="AND" property="searchCnd" compareValue="0">
+				<![CDATA[	S_ID LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCnd" compareValue="1">
+				<![CDATA[	SNS_IDX LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>	
+	</select>
+	
+	<insert id="insertMngLogPro" parameterClass="LogMngVO">
+		<![CDATA[  
+			INSERT INTO MLOG(S_ID,SNS_IDX,AC_PAGE,AC_SPEC,LOG_IP,LOG_DATE)
+			value(#s_id#,#sns_idx#,#ac_page#,#ac_spec#,#log_ip#,SYSDATE())
+		]]>
+	</insert>
+</sqlMap>

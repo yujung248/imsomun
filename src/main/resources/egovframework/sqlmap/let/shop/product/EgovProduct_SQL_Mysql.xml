@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Product">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="ProductMngVO" type="egovframework.let.shop.mng.product.service.impl.ProductMngVO"/> <!-- db에서 세터로 받아넣는 -->
+	<typeAlias  alias="ProductMng" type="egovframework.let.shop.mng.product.service.ProductMng"/>
+	<typeAlias alias="ProductUserVO" type="egovframework.let.shop.user.product.service.impl.ProductUserVO"/>
+	<typeAlias alias="ProductUser" type="egovframework.let.shop.user.product.service.ProductUser"/>
+	
+	<resultMap id="ProductList" class="egovframework.let.shop.mng.product.service.impl.ProductMngVO"> <!-- property는 vo값 -->
+		<result property="p_idx" column="P_IDX" columnIndex="1"/>
+		<result property="s_id" column="S_ID" columnIndex="2"/>
+		<result property="p_name" column="P_NAME" columnIndex="3"/>
+		<result property="p_price" column="P_PRICE" columnIndex="4"/>
+		<result property="p_regdate" column="P_REGDATE" columnIndex="5"/>
+		<result property="p_moddate" column="P_MODDATE" columnIndex="6"/>
+		<result property="p_image" column="P_IMAGE" columnIndex="7"/>
+		<result property="p_content" column="P_CONTENT" columnIndex="8"/>
+		<result property="p_tage" column="P_TAGE" columnIndex="9"/>
+		<result property="p_sdate" column="P_SDATE" columnIndex="10"/>
+		<result property="p_edate" column="P_EDATE" columnIndex="11"/>
+		<result property="p_status" column="P_STATUS" columnIndex="12"/>
+		<result property="a_id" column="A_ID" columnIndex="13"/>
+		<result property="p_q" column="P_Q" columnIndex="14"/>
+	</resultMap>
+	
+	<select id="EgovMngProductDAO.selectMngProductList" parameterClass="ProductMngVO" resultMap="ProductList" >
+	<!-- 쿼리문 작성 -->
+		<![CDATA[  
+			SELECT 
+				 P_IDX
+				,S_ID
+				,P_NAME
+				,P_PRICE
+				,P_REGDATE
+				,P_MODDATE
+				,P_IMAGE
+				,P_CONTENT
+				,P_TAGE
+				,P_SDATE
+				,P_EDATE
+				,P_STATUS
+				,A_ID
+				,P_Q
+			FROM
+				PRODUCT
+			WHERE 1=1
+			]]>
+			<isEqual prepend="AND" property="searchCnd" compareValue="0"> <!-- prepend로 and,or...쓰고 searchCnd값이 0이면 쿼리 문을 실행 시킨다. -->
+				<![CDATA[	P_NAME LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCnd" compareValue="1">
+				<![CDATA[	S_ID LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+			ORDER BY P_REGDATE DESC
+			LIMIT 	#recordCountPerPage#
+			OFFSET	#firstIndex#
+	</select>
+	
+	<select id="EgovMngProductDAO.selectMngProductListCnt" parameterClass="ProductMngVO" resultClass="java.lang.Integer" >
+		<![CDATA[
+			SELECT
+				COUNT(P_IDX)
+			FROM
+				PRODUCT
+			WHERE 1=1
+		]]>
+			<isEqual prepend="AND" property="searchCnd" compareValue="0"> <!-- prepend로 and,or...쓰고 searchCnd값이 0이면 쿼리 문을 실행 시킨다. -->
+				<![CDATA[	P_NAME LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCnd" compareValue="1">
+				<![CDATA[	S_ID LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>
+	</select>
+	
+	<select id="EgovMngProductDAO.selectMngProductForm"  parameterClass="ProductMngVO" resultClass="ProductMngVO">
+	SELECT *
+	FROM PRODUCT
+	WHERE P_IDX = #p_idx#
+	</select>
+	
+	<update id="EgovMngProductDAO.updateMngProductPro" parameterClass="ProductMngVO" >
+	UPDATE PRODUCT
+		SET 
+			P_NAME = #p_name#,
+			P_PRICE = #p_price#,
+			P_CONTENT = #p_content#,
+			P_TAGE = #p_tage#,
+			P_IMAGE = #p_image#,
+			P_Q = #p_q#,
+			P_SDATE = #p_sdate#,
+			P_EDATE = #p_edate#,
+			P_MODDATE = SYSDATE()
+		WHERE P_IDX = #p_idx#
+	</update>
+
+	
+ 	<insert id="EgovMngProductDAO.insertMngProductPro" parameterClass="ProductMngVO" >
+ 		<![CDATA[
+ 			INSERT INTO PRODUCT
+			(P_IDX,S_ID, P_NAME, P_PRICE, P_REGDATE P_IMAGE, P_CONTENT, P_TAGE, P_SDATE, P_EDATE, P_Q, A_ID)
+			VALUES
+			((select max(P_IDX)+1
+			 FROM PRODUCT p), #s_id#, #p_name#, #p_price#, SYSDATE(), #p_image#, #p_content#, #p_tage#, #p_sdate#, #p_edate#, #p_q#, #a_id#)				
+ 		]]>
+ 	</insert>
+ 	
+ 	<delete id="EgovMngProductDAO.deleteMngProduct" parameterClass="ProductMngVO">
+ 	UPDATE PRODUCT
+		SET 
+			P_STATUS = 
+				CASE 
+					WHEN P_STATUS = 'Y'
+						THEN 'N'
+						ELSE 'Y'
+					END
+		WHERE P_IDX = #p_idx#
+ 	</delete>
+ 
+ <!-- 판매자 및 구매자용/판매자 및 구매자용/판매자 및 구매자용/판매자 및 구매자용 -->
+ 
+ <resultMap id="ProductUserList" class="egovframework.let.shop.user.product.service.impl.ProductUserVO"> <!-- property는 vo값 -->
+		<result property="p_idx" column="P_IDX" columnIndex="1"/>
+		<result property="s_id" column="S_ID" columnIndex="2"/>
+		<result property="p_name" column="P_NAME" columnIndex="3"/>
+		<result property="p_price" column="P_PRICE" columnIndex="4"/>
+		<result property="p_regdate" column="P_REGDATE" columnIndex="5"/>
+		<result property="p_moddate" column="P_MODDATE" columnIndex="6"/>
+		<result property="p_image" column="P_IMAGE" columnIndex="7"/>
+		<result property="p_content" column="P_CONTENT" columnIndex="8"/>
+		<result property="p_tage" column="P_TAGE" columnIndex="9"/>
+		<result property="p_sdate" column="P_SDATE" columnIndex="10"/>
+		<result property="p_edate" column="P_EDATE" columnIndex="11"/>
+		<result property="p_status" column="P_STATUS" columnIndex="12"/>
+		<result property="p_q" column="P_Q" columnIndex="13"/>
+	</resultMap>
+ 
+ 	<select id="EgovUserProductDAO.selectUserProductList" parameterClass="ProductUserVO" resultMap="ProductUserList" >
+	<!-- 쿼리문 작성 -->
+		<![CDATA[  
+			SELECT 
+				 P_IDX
+				,S_ID
+				,P_NAME
+				,P_PRICE
+				,P_REGDATE
+				,P_MODDATE
+				,P_IMAGE
+				,P_CONTENT
+				,P_TAGE
+				,P_SDATE
+				,P_EDATE
+				,P_STATUS
+				,P_Q
+			FROM
+				PRODUCT
+			WHERE P_STATUS = 'Y'
+		]]>
+			<isEqual prepend="AND" property="searchCnd" compareValue="0">
+				<![CDATA[	(p_name LIKE CONCAT('%',#searchWrd#,'%') OR s_id LIKE CONCAT('%',#searchWrd#,'%') OR P_CONTENT LIKE CONCAT('%',#searchWrd#,'%') OR P_TAGE LIKE CONCAT('%',#searchWrd#,'%') )	]]>
+			</isEqual>
+			<isNotNull prepend="AND" property="s_id" > <!-- prepend로 and,or...쓰고 searchCnd값이 0이면 쿼리 문을 실행 시킨다. -->
+				<![CDATA[	S_ID LIKE CONCAT ('%', #s_id#,'%') 		]]>
+			</isNotNull>
+		ORDER BY P_REGDATE DESC
+		LIMIT 	#recordCountPerPage#
+		OFFSET	#firstIndex#
+	</select>
+	
+	<select id="EgovUserProductDAO.selectUserProductListCnt" parameterClass="ProductUserVO" resultClass="java.lang.Integer" >
+		<![CDATA[
+			SELECT
+				COUNT(P_IDX)
+			FROM
+				PRODUCT
+			WHERE P_STATUS = 'Y'
+		]]>
+			<isEqual prepend="AND" property="searchCnd" compareValue="0">
+				<![CDATA[	(p_name LIKE CONCAT('%',#searchWrd#,'%') OR s_id LIKE CONCAT('%',#searchWrd#,'%') OR P_CONTENT LIKE CONCAT('%',#searchWrd#,'%') OR P_TAGE LIKE CONCAT('%',#searchWrd#,'%') )	]]>
+			</isEqual>
+			<isNotNull prepend="AND" property="s_id" > <!-- prepend로 and,or...쓰고 searchCnd값이 0이면 쿼리 문을 실행 시킨다. -->
+				<![CDATA[	S_ID LIKE CONCAT ('%', #s_id#,'%') 		]]>
+			</isNotNull>
+	</select>
+	
+	<select id="EgovUserProductDAO.selectUserProductForm"  parameterClass="ProductUserVO" resultClass="ProductUserVO">
+	SELECT *
+	FROM PRODUCT
+	WHERE P_IDX = #p_idx#
+	</select>
+	
+	<update id="EgovUserProductDAO.updateUserProductPro" parameterClass="ProductUserVO" >
+	UPDATE PRODUCT
+		SET 
+			P_NAME = #p_name#,
+			P_PRICE = #p_price#,
+			P_CONTENT = #p_content#,
+			P_TAGE = #p_tage#,
+			P_Q = #p_q#,
+			P_SDATE = #p_sdate#,
+			P_EDATE = #p_edate#,
+			P_MODDATE = SYSDATE()
+		WHERE P_IDX = #p_idx#+0
+	</update>
+	
+	<insert id="EgovUserProductDAO.insertUserProductPro" parameterClass="ProductUserVO" >
+ 		<![CDATA[
+ 			INSERT INTO PRODUCT
+			(P_IDX, S_ID, P_NAME, P_PRICE, P_REGDATE, P_IMAGE, P_CONTENT, P_TAGE, P_SDATE, P_EDATE, P_Q)
+			VALUES
+			((select max(P_IDX)+1
+			 FROM PRODUCT p), #s_id#, #p_name#, #p_price#, SYSDATE(), #p_image#, #p_content#, #p_tage#, #p_sdate#, #p_edate#, #p_q#)	
+ 		]]>
+ 	</insert>
+ 	
+ 	<delete id="EgovUserProductDAO.deleteUserProduct" parameterClass="ProductUserVO">
+ 	UPDATE PRODUCT
+		SET 
+			P_STATUS = 
+				CASE 
+					WHEN P_STATUS = 'Y'
+						THEN 'N'
+						ELSE 'Y'
+					END
+		WHERE P_IDX = #p_idx#
+ 	</delete>
+ 	
+ 	<select id="EgovBuyerProductDAO.selectBuyerProduct" parameterClass="ProductUserVO" resultClass="ProductUserVO">
+ 	SELECT 
+ 		 A.P_IDX
+		, A.P_NAME
+		, A.P_IMAGE
+		, A.P_PRICE
+		, A.P_CONTENT
+		, A.P_TAGE
+		, A.P_Q
+		, A.P_SDATE
+		, A.P_EDATE
+		, A.P_MODDATE
+		, A.S_ID
+		, B.S_ID
+	FROM 
+		PRODUCT A, SELLER B
+	WHERE 
+		1 = 1
+	AND 
+		A.S_ID = B.S_ID
+	AND 
+		A.P_IDX = #p_idx#
+ 	</select>
+
+
+	<!-- <update id="EgovMngProductDAO.selectMngProductForm" parameterClass="ProductVO">
+ 		<![CDATA[
+			UPDATE PRODUCT SET 
+								P_CONTENT = #p_content#,
+								P_Q = #p_q#,
+								P_NAME = #p_name#
+			WHERE
+								P_CONTENT = #p_content#,
+								P_Q = #p_q#
+ 		]]>
+ 	</update> -->
+ 	
+ 
+	<!-- <insert id="EgovMngProductDAO.insertMngProduct" parameterClass="Product">
+		<![CDATA[
+			INSERT INTO 테이블명
+			(컬럼명, 날짜)
+			VALUES
+			( #변수명#, SYSDATE()  
+			 )			
+		]]>
+	</insert>
+	
+	<update id="EgovMngProductDAO.updateMngProduct" parameterClass="Product">
+ 		<![CDATA[
+			UPDATE 테이블명 SET 
+				컬럼명 = #변수명#,
+				LAST_UPDT_PNTTM = SYSDATE()
+			WHERE 컬럼명 = #변수명#
+ 		]]>
+ 	</update> -->
+ 	<!-- <update id="EgovMngProductDAO.selectMngProductForm" parameterClass="ProductVO">
+ 		<![CDATA[
+			UPDATE PRODUCT SET 
+								P_CONTENT = #p_content#,
+								P_Q = #p_q#,
+								P_NAME = #p_name#
+			WHERE
+								P_CONTENT = #p_content#,
+								P_Q = #p_q#
+ 		]]>
+ 	</update> -->
+</sqlMap>
